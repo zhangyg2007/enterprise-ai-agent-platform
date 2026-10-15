@@ -47,7 +47,7 @@ fi
 | nvcc --version | 当前 PATH 对应的 CUDA Toolkit 编译器 | PyTorch 是否能使用 GPU |
 | torch.version.cuda | 当前环境中 PyTorch 的 CUDA 构建版本 | 系统安装的全部 Toolkit 版本 |
 
-如果已有 PyTorch 环境，先激活那个环境，再执行下面的只读检查；若没有，跳过，下一课再安装。
+如果已有 PyTorch 环境，先激活那个环境，再执行下面的只读检查；若没有，跳过，后续微调课再单独安装。M01–M02 不需要 PyTorch。
 
 ```bash
 python -c "import torch; print('torch:', torch.__version__); print('runtime:', torch.version.cuda); print('available:', torch.cuda.is_available())"
@@ -127,6 +127,6 @@ Docker / Compose 是否已安装：
 
 完成条件：上述关键项有真实输出支撑；缺失项明确写“未安装”“未检查”或具体错误。本课不需要任何训练结果。
 
-思考题：为什么 `nvidia-smi` 显示 CUDA 13，却可能使用 CUDA 12 构建的 PyTorch？为什么能运行 27B 量化模型，不等于能用同样显存训练它？下一课会用环境和显存构成解释。
+思考题：为什么 `nvidia-smi` 显示 CUDA 13，却可能使用 CUDA 12 构建的 PyTorch？为什么能运行 27B 量化模型，不等于能用同样显存训练它？后续微调课会用环境和显存构成解释。
 
 后续 GitHub 同步使用 [指定仓库](https://github.com/zhangyg2007/enterprise-ai-agent-platform)。当前本地文档尚未推送；服务器拉取步骤在首批内容发布后提供。

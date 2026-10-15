@@ -1,0 +1,26 @@
+name: enterprise-ai-lab
+services:
+  db:
+    image: pgvector/pgvector:0.8.2-pg16@sha256:00ba258a66dac104fd5171074a0084462a64a1369d8513f3d0a634e2f24d15bc
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?Run scripts/create_env.py first}
+      POSTGRES_USER: ${POSTGRES_USER:?Run scripts/create_env.py first}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run scripts/create_env.py first}
+      LAB_A_PASSWORD: ${LAB_A_PASSWORD:?Run scripts/create_env.py first}
+      LAB_B_PASSWORD: ${LAB_B_PASSWORD:?Run scripts/create_env.py first}
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    restart: unless-stopped
+    shm_size: 256mb
+volumes:
+  pgdata:
