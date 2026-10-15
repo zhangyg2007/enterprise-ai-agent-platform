@@ -17,7 +17,7 @@
 1. 阅读 [课程路线与模块交付计划](docs/ROADMAP.md)。
 2. 阅读 [已确认的平台设计](docs/superpowers/specs/2026-10-15-enterprise-ai-platform-design.md)。
 3. 在服务器执行 [第 0 课：只读环境检查](docs/tutorials/00-server-inventory.md)，确认真实配置。
-4. 等本批代码发布后，按 [第 1 课：Ubuntu 基础平台](docs/tutorials/01-ubuntu-platform.md) 安装与启动。
+4. 取得包含 M01–M02 的版本后，按 [第 1 课：Ubuntu 基础平台](docs/tutorials/01-ubuntu-platform.md) 安装与启动。
 5. 按 [第 2 课：企业数据库与合成数据](docs/tutorials/02-enterprise-data.md) 生成数据、查询并验收。
 
 第 0–2 课已撰写。M03–M13 随后续模块补齐，当前不提供这些模块的运行入口。
