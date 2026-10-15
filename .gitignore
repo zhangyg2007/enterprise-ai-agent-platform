@@ -1,0 +1,17 @@
+.worktrees/
+.venv*/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.env
+.env.*
+!.env.example
+data/generated/
+reports/local/
+models/
+outputs/
+backups/
+.secrets/
+*.log
+.DS_Store
