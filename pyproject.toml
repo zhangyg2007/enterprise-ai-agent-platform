@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68,<81"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "enterprise-ai-agent-lab"
+version = "0.1.0"
+description = "Synthetic enterprise data and Ubuntu learning labs"
+requires-python = ">=3.11,<3.14"
+dependencies = []
+
+[project.optional-dependencies]
+db = ["psycopg[binary]==3.2.10"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
