@@ -2,7 +2,7 @@
 
 面向具备 Python 编程、Linux 与 Hadoop 基础的学习者，用同一家虚构企业贯穿数据工程、Qwen 微调、企业知识库、LangGraph 1.x 应用开发和 FDE 项目交付。
 
-**当前阶段：M01–M02 代码与教程已撰写，服务器验收待执行。** 已提供数据库配置、14 张业务表、两租户合成数据生成器和查询/检查入口；未部署应用、运行 GPU 训练或完成服务器集成验证。
+**当前阶段：M01–M02 已发布到 GitHub main，服务器验收待执行；M03 在当前开发分支交付。** 已提供数据库配置、14 张业务表、两租户合成数据，以及文件事件的数据治理实验；未部署应用、运行 GPU 训练或完成 Ubuntu 集成验证。
 
 ## 工作方式
 
@@ -19,8 +19,9 @@
 3. 在服务器执行 [第 0 课：只读环境检查](docs/tutorials/00-server-inventory.md)，确认真实配置。
 4. 取得包含 M01–M02 的版本后，按 [第 1 课：Ubuntu 基础平台](docs/tutorials/01-ubuntu-platform.md) 安装与启动。
 5. 按 [第 2 课：企业数据库与合成数据](docs/tutorials/02-enterprise-data.md) 生成数据、查询并验收。
+6. 取得包含 M03 的版本后，按 [第 3 课：数据治理](docs/tutorials/03-data-governance.md) 学习清洗、增量、坏数据隔离与删除传播。本课不依赖 PostgreSQL 已启动，但需要 M02 的 tiny 数据文件。
 
-第 0–2 课已撰写。M03–M13 随后续模块补齐，当前不提供这些模块的运行入口。
+第 0–3 课已撰写。M04–M13 随后续模块补齐，当前不提供这些模块的运行入口。M03 代码尚在本地分支；GitHub 的 main 是否包含 M03，以发布说明和文件检查为准。
 
 ## 本批文件导航
 
@@ -32,6 +33,9 @@
 | [数据库工具](src/enterprise_ai/db.py) | health / load / demo / verify；导入事务与幂等检查 |
 | [数据字典](docs/data-dictionary.md) | 实体、字段、关系和业务口径 |
 | [M01–M02 验证记录](docs/validation/2026-10-15-m01-m02.md) | 已执行检查和未执行的服务器验证 |
+| [M03 治理工具](src/enterprise_ai/governance.py) | 严格事件校验、隔离区、SQLite 事务、不可变快照 |
+| [M03 示例与验收](src/enterprise_ai/governance_demo.py) | 两批合成事件、独立临时目录重放验收 |
+| [M03 验证记录](docs/validation/2026-10-16-m03.md) | 文件 ETL 测试与独立审阅结果 |
 
 本项目是教学平台。数据库管理员仅用于初始化、导入和验收；三条查询示例使用受限读者账号。尚无 HTTP 认证、生产用户体系或正式写入流程。
 
