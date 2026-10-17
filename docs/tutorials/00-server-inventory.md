@@ -129,4 +129,4 @@ Docker / Compose 是否已安装：
 
 思考题：为什么 `nvidia-smi` 显示 CUDA 13，却可能使用 CUDA 12 构建的 PyTorch？为什么能运行 27B 量化模型，不等于能用同样显存训练它？后续微调课会用环境和显存构成解释。
 
-后续 GitHub 同步使用 [指定仓库](https://github.com/zhangyg2007/enterprise-ai-agent-platform)。当前本地文档尚未推送；服务器拉取步骤在首批内容发布后提供。
+后续 GitHub 同步使用 [指定仓库](https://github.com/zhangyg2007/enterprise-ai-agent-platform)。服务器拉取步骤见[第 1 课](01-ubuntu-platform.md)。
