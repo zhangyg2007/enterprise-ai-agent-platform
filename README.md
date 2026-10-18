@@ -2,7 +2,7 @@
 
 面向具备 Python 编程、Linux 与 Hadoop 基础的学习者，用同一家虚构企业贯穿数据工程、Qwen 微调、企业知识库、LangGraph 1.x 应用开发和 FDE 项目交付。
 
-**当前阶段：M01–M03 代码与教程已交付，Ubuntu 服务器验收待执行。** 已提供数据库配置、14 张业务表、两租户合成数据，以及文件事件的数据治理实验；未部署应用、运行 GPU 训练或完成 Ubuntu 集成验证。
+**当前版本：0.1.2.0，已提供 M01–M05 代码与教程。Ubuntu 服务器验收待执行。** 已提供数据库配置、14 张业务表、两租户合成数据、文件事件治理、Ollama评估工具及480条可复现的微调样本；未运行真实模型或完成 Ubuntu 集成验证。
 
 ## 工作方式
 
@@ -20,8 +20,10 @@
 4. 取得包含 M01–M02 的版本后，按 [第 1 课：Ubuntu 基础平台](docs/tutorials/01-ubuntu-platform.md) 安装与启动。
 5. 按 [第 2 课：企业数据库与合成数据](docs/tutorials/02-enterprise-data.md) 生成数据、查询并验收。
 6. 取得包含 M03 的版本后，按 [第 3 课：数据治理](docs/tutorials/03-data-governance.md) 学习清洗、增量、坏数据隔离与删除传播。本课不依赖 PostgreSQL 已启动，但需要 M02 的 tiny 数据文件。
+7. 取得包含 M04 的代码后，按 [第 4 课：模型调用与基线](docs/tutorials/04-model-baseline.md) 核对已有 Ollama 模型，执行两题冒烟与 16 题公开开发集评估；本课不依赖数据库服务。
+8. 取得包含 M05 的代码后，按 [第 5 课：微调数据工程](docs/tutorials/05-finetune-data.md) 生成480条标注，核对分组切分、两种导出格式与人工复核表；本课不安装训练环境。
 
-第 0–3 课已撰写。M04–M13 随后续模块补齐，当前不提供这些模块的运行入口。使用包含 M03 的课程版本 0.1.1.0 或后续版本，按各课文件检查确认代码齐全。
+第 0–5 课已撰写，课程版本 0.1.2.0 包含 M04–M05。M06–M13 随后续模块补齐，当前不提供这些模块的运行入口。
 
 ## 本批文件导航
 
@@ -36,6 +38,14 @@
 | [M03 治理工具](src/enterprise_ai/governance.py) | 严格事件校验、隔离区、SQLite 事务、不可变快照 |
 | [M03 示例与验收](src/enterprise_ai/governance_demo.py) | 两批合成事件、独立临时目录重放验收 |
 | [M03 验证记录](docs/validation/2026-10-16-m03.md) | 文件 ETL 测试与独立审阅结果 |
+| [M04 Ollama 适配器](src/enterprise_ai/ollama.py) | 模型清单、非流式请求、超时与协议校验 |
+| [M04 基线入口](src/enterprise_ai/baseline.py) | 严格字段校验、固定提示词、inventory / evaluate |
+| [M04 公开教学题集](data/samples/m04-intents.jsonl) | 16 道 CRM/HCM/SCM、缺信息与拒答题 |
+| [M04 验证记录](docs/validation/2026-10-17-m04.md) | 离线测试与服务器待验收边界 |
+| [M05 数据工具](src/enterprise_ai/finetune_data.py) | 分组生成、泄漏检查、双格式导出和验证 |
+| [M05 数据卡](docs/data-cards/m05-intents.md) | 来源、标注、数量、适用范围与限制 |
+| [M05 验证记录](docs/validation/2026-10-17-m05.md) | 真实文件生成、离线测试与独立审核 |
+| [M01–M05 工作总结](docs/progress/2026-10-17-m01-m05-summary.md) | 已交付内容、问题修复、发布状态与下一步 |
 
 本项目是教学平台。数据库管理员仅用于初始化、导入和验收；三条查询示例使用受限读者账号。尚无 HTTP 认证、生产用户体系或正式写入流程。
 
