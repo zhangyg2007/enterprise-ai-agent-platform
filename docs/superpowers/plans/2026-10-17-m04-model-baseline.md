@@ -30,26 +30,26 @@
 Files: `src/enterprise_ai/ollama.py`, `tests/test_ollama.py`。
 接口严格见 spec 的 OllamaClient/ModelError。适配器独立实现，不修改评分器和根配置。
 
-- [ ] 写地址、请求载荷、HTTP 错误、严格 JSON、done、标签和 digest 校验测试；先观察缺失功能失败。
-- [ ] 实现客户端；响应上限 4 MiB，不重试/不跟随跳转，不把服务端错误原文直接打印。
-- [ ] 定向运行 `python -m unittest tests.test_ollama -v`，全部通过。
+- [x] 写地址、请求载荷、HTTP 错误、严格 JSON、done、标签和 digest 校验测试；先观察缺失功能失败。
+- [x] 实现客户端；响应上限 4 MiB，不重试/不跟随跳转，不把服务端错误原文直接打印。
+- [x] 定向运行 `python -m unittest tests.test_ollama -v`，全部通过。
 
 ### T2：样本、评分与记录
 
 Files: `src/enterprise_ai/baseline.py`, `src/enterprise_ai/evaluation.py`, `tests/test_baseline.py`, `data/samples/m04-intents.jsonl`。
 消费 T1 接口。输出 `load_cases(path)`、`score_response(raw, expected)`、`run_evaluation(client, *, model, cases_path, output_dir, limit=None, think=None, options=None)`。
 
-- [ ] 先写失败测试：正确答案 exact=true；超时+正确各一题 exact_rate=0.5；截断 exact=false；bool ID schema=false；不覆盖/身份漂移/中断。
-- [ ] 实现16题严格校验、固定提示、评分、持久化和 CLI；错误不得静默丢失。
-- [ ] 运行 `python -m unittest tests.test_baseline -v`，检查真实临时文件证据与手算指标一致。
+- [x] 先写失败测试：正确答案 exact=true；超时+正确各一题 exact_rate=0.5；截断 exact=false；bool ID schema=false；不覆盖/身份漂移/中断。
+- [x] 实现16题严格校验、固定提示、评分、持久化和 CLI；错误不得静默丢失。
+- [x] 运行 `python -m unittest tests.test_baseline -v`，检查真实临时文件证据与手算指标一致。
 
 ### T3：教程与发布前验证
 
 Files: `docs/tutorials/04-model-baseline.md`, `README.md`, `docs/ROADMAP.md`, `docs/validation/2026-10-17-m04.md`。
 
-- [ ] 编写从原理到操作、预期、故障、恢复、练习答案的完整教程；真实效果留空待测。
-- [ ] 全套 `python -m unittest discover -v`；检查所有 CLI help、Python AST、教程 Bash 语法与相对链接。
-- [ ] 独立审查代码与教程，修复实质问题并执行回归；保存真实验证证据。
-- [ ] 更新导航与版本范围，提交可审阅结果；不把服务器验收标为完成。
+- [x] 编写从原理到操作、预期、故障、恢复、练习答案的完整教程；真实效果留空待测。
+- [x] 全套 `python -m unittest discover -v`；检查所有 CLI help、Python AST、教程 Bash 语法与相对链接。
+- [x] 独立审查代码与教程，修复实质问题并执行回归；保存真实验证证据。
+- [x] 更新导航与版本范围，提交可审阅结果；不把服务器验收标为完成。
 
 执行说明：依据用户已确认的分模块方案直接实施。T1 和 T2 的文件所有权独立，接口按 spec 固定；主代理串行维护共享导航与配置。已有隔离工作目录复用，无环境安装步骤。
