@@ -1,0 +1,13 @@
+# Candidate core constraints, NOT a full transitive lock or GPU certification.
+# Install the torch family from the official cu124 index first (see M06 tutorial).
+torch==2.6.0
+torchvision==0.21.0
+torchaudio==2.6.0
+transformers==4.57.1
+peft==0.17.1
+bitsandbytes==0.46.1
+accelerate==1.11.0
+datasets==4.0.0
+trl==0.24.0
+torchdata==0.11.0
+gradio==5.50.0

@@ -2,7 +2,7 @@
 
 面向具备 Python 编程、Linux 与 Hadoop 基础的学习者，用同一家虚构企业贯穿数据工程、Qwen 微调、企业知识库、LangGraph 1.x 应用开发和 FDE 项目交付。
 
-**当前版本：0.1.2.0，已提供 M01–M05 代码与教程。Ubuntu 服务器验收待执行。** 已提供数据库配置、14 张业务表、两租户合成数据、文件事件治理、Ollama评估工具及480条可复现的微调样本；未运行真实模型或完成 Ubuntu 集成验证。
+**当前课程批次：0.1.3.0，已提供 M01–M06 代码与教程。发布状态以 GitHub PR 为准，Ubuntu 服务器验收待执行。** 已提供数据库配置、14 张业务表、两租户合成数据、文件事件治理、Ollama评估工具、480条微调样本及单卡 Qwen 训练准备与检查工具；未运行真实模型或完成 Ubuntu 集成验证。
 
 ## 工作方式
 
@@ -23,7 +23,9 @@
 7. 取得包含 M04 的代码后，按 [第 4 课：模型调用与基线](docs/tutorials/04-model-baseline.md) 核对已有 Ollama 模型，执行两题冒烟与 16 题公开开发集评估；本课不依赖数据库服务。
 8. 取得包含 M05 的代码后，按 [第 5 课：微调数据工程](docs/tutorials/05-finetune-data.md) 生成480条标注，核对分组切分、两种导出格式与人工复核表；本课不安装训练环境。
 
-第 0–5 课已撰写，课程版本 0.1.2.0 包含 M04–M05。M06–M13 随后续模块补齐，当前不提供这些模块的运行入口。
+9. 取得包含 M06 的代码后，按 [第 6 课：Qwen 单卡微调](docs/tutorials/06-qwen-finetuning.md) 准备独立训练环境、固定模型与数据快照，先做小规模试跑，再训练正式 adapter。安装与实测问题可使用[跨会话交接手册](docs/runbooks/m06-server-handoff.md)。
+
+第 0–6 课已撰写。M04–M05 已在 [PR #3](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/3) 合并；M06 是否已进入 main，请查看对应 PR 和代码文件，不能仅凭 VERSION 判断。M07–M13 随后续模块补齐，当前不提供这些模块的运行入口。
 
 ## 本批文件导航
 
@@ -46,6 +48,10 @@
 | [M05 数据卡](docs/data-cards/m05-intents.md) | 来源、标注、数量、适用范围与限制 |
 | [M05 验证记录](docs/validation/2026-10-17-m05.md) | 真实文件生成、离线测试与独立审核 |
 | [M01–M05 工作总结](docs/progress/2026-10-17-m01-m05-summary.md) | 已交付内容、问题修复、发布状态与下一步 |
+| [M06 训练配置](configs/training/m06-smoke.yaml) / [正式配置](configs/training/m06-sft.yaml) | 固定 4B 底座、4bit QLoRA、10 步试跑与 3 epoch 实验 |
+| [M06 版本来源](configs/training/m06-versions.json) / [核心约束](requirements/m06-constraints.txt) | 固定源码、模型 revision 与候选依赖；不是 GPU 兼容认证 |
+| [M06 准备器](src/enterprise_ai/training.py) / [检查器](src/enterprise_ai/training_checks.py) | 隔离数据快照、配置摘要、GPU 小探针及真实模板长度检查 |
+| [M06 验证记录](docs/validation/2026-10-19-m06.md) | 离线验证证据、独立审核与服务器待验收清单 |
 
 本项目是教学平台。数据库管理员仅用于初始化、导入和验收；三条查询示例使用受限读者账号。尚无 HTTP 认证、生产用户体系或正式写入流程。
 

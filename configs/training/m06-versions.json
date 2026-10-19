@@ -1,0 +1,27 @@
+{
+  "status": "candidate_source_checked_not_gpu_verified",
+  "checked_on": "2026-10-18",
+  "python": "3.11",
+  "factory": {
+    "tag": "v0.9.4",
+    "commit": "95ac3f2373b82662c1bd855c284d3379e6a763d3",
+    "url": "https://github.com/hiyouga/LLaMA-Factory/releases/tag/v0.9.4"
+  },
+  "model": {
+    "repo_id": "Qwen/Qwen3-4B-Instruct-2507",
+    "revision": "cdbee75f17c01a7cc42f958dc650907174af0554",
+    "template": "qwen3_nothink",
+    "url": "https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507"
+  },
+  "torch_index": "https://download.pytorch.org/whl/cu124",
+  "torch_runtime": "12.4",
+  "sources": [
+    "https://raw.githubusercontent.com/hiyouga/LLaMA-Factory/v0.9.4/pyproject.toml",
+    "https://raw.githubusercontent.com/hiyouga/LLaMA-Factory/v0.9.4/src/llamafactory/extras/constants.py",
+    "https://raw.githubusercontent.com/hiyouga/LLaMA-Factory/v0.9.4/src/llamafactory/data/template.py",
+    "https://raw.githubusercontent.com/hiyouga/LLaMA-Factory/v0.9.4/examples/train_qlora/qwen3_lora_sft_otfq.yaml",
+    "https://pytorch.org/get-started/previous-versions/",
+    "https://raw.githubusercontent.com/bitsandbytes-foundation/bitsandbytes/0.46.1/pyproject.toml",
+    "https://raw.githubusercontent.com/huggingface/trl/v0.24.0/pyproject.toml"
+  ]
+}
