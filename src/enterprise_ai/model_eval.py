@@ -14,7 +14,7 @@ from .baseline import FIELDS, SCHEMA, SYSTEM_PROMPT, empty_score, load_cases, sc
 from .evaluation import revision, summarize, utc_now, write_json
 from .finetune_data import json_bytes, read_bounded, sha256, write_new
 from .model_delivery import (COUNTS, GENERATION, configurations, fingerprint_model,
-                             read_artifact, verify_release)
+                             read_artifact, verify_release, verify_export, validate_export_state)
 from .ollama import strict_json_loads
 from .training import _object
 from .training_checks import CORE_VERSIONS, _check_factory
@@ -123,14 +123,15 @@ def evaluate_release(release_dir, variant, split, output_dir, limit=None, backen
                 'prompt_sha256': sha256(SYSTEM_PROMPT.encode()), 'schema_sha256': sha256(json_bytes(SCHEMA)),
                 'generation': dict(GENERATION), 'seed': 42, 'code': revision(),
                 'code_sha256': code_fingerprint(), 'runtime': None, 'identity_stable': False,
-                'merged_files': None, 'artifacts': {}}
+                'merged_files': None, 'export_state': None, 'artifacts': {}}
     write_json(output / 'manifest.json', manifest)
     write_new(output / 'cases.json', json_bytes(selected))
     write_new(output / 'source-cases.jsonl', case_raw)
     records, backend, error = [], None, None
     try:
         if variant == 'merged':
-            manifest['merged_files'] = fingerprint_model(Path(frozen['merged_path']))
+            manifest['export_state'] = verify_export(release, frozen)
+            manifest['merged_files'] = manifest['export_state']['files']
         backend = (backend_factory or FactoryBackend)(config)
         # Snapshot metadata instead of retaining a mutable backend reference.
         manifest['runtime'] = strict_json_loads(json_bytes(backend.runtime).decode())
@@ -138,6 +139,8 @@ def evaluate_release(release_dir, variant, split, output_dir, limit=None, backen
             raise ValueError('Backend runtime metadata missing')
         if verify_release(release) != frozen:
             raise ValueError('Release changed during initialization')
+        if variant == 'merged' and verify_export(release, frozen) != manifest['export_state']:
+            raise ValueError('Export evidence changed during initialization')
     except Exception as exc:
         error = 'initialization_' + type(exc).__name__
     with (output / 'records.jsonl').open('xb') as stream:
@@ -163,7 +166,7 @@ def evaluate_release(release_dir, variant, split, output_dir, limit=None, backen
     try:
         stable = verify_release(release) == frozen
         if variant == 'merged':
-            stable = stable and manifest['merged_files'] == fingerprint_model(Path(frozen['merged_path']))
+            stable = stable and manifest['export_state'] == verify_export(release, frozen)
     except (ValueError, OSError, KeyError, TypeError):
         stable = False
     summary = metrics(records, selected, stable=stable, subset=len(selected) != len(cases))
@@ -225,8 +228,10 @@ def _read_run(directory):
         raise ValueError('Summary differs from recomputed metrics')
     if not isinstance(m['runtime'], dict) or not m['runtime']:
         raise ValueError('Missing runtime identity')
-    if m['variant'] == 'merged' and not m['merged_files']:
-        raise ValueError('Missing merged model identity')
+    if m['variant'] == 'merged':
+        validate_export_state(m.get('export_state'), frozen)
+        if m['merged_files'] != m['export_state']['files']:
+            raise ValueError('Merged identity differs from successful export evidence')
     return m, cases, records, summary
 
 

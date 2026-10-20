@@ -97,6 +97,12 @@ class DeliveryTests(unittest.TestCase):
             self.prepare()
         self.assertFalse(self.release.exists())
 
+    def test_per_call_sequence_count_is_not_an_unsupported_lf_config_field(self):
+        self.prepare()
+        for name in ('base', 'adapter', 'adapter-bf16', 'merged'):
+            self.assertNotIn('num_return_sequences', self.config(name + '.yaml'))
+        self.assertEqual(self.config('manifest.json')['generation']['num_return_sequences'], 1)
+
     def test_smoke_run_rejected(self):
         self.run = self.root / 'smoke'
         prepare_run(self.data, self.model, self.run, 'smoke', BASELINE)
@@ -148,6 +154,14 @@ class DeliveryTests(unittest.TestCase):
         (self.model / 'model-00001-of-00001.safetensors').rename(self.model / 'model.safetensors')
         files = delivery.fingerprint_model(self.model)
         self.assertIn('model.safetensors', files)
+
+    def test_ambiguous_single_file_and_sharded_layout_is_rejected(self):
+        self.prepare()
+        (self.model / 'model.safetensors').write_bytes(b'untracked-preferred-checkpoint')
+        with self.assertRaises(ValueError):
+            delivery.fingerprint_model(self.model)
+        with self.assertRaises(ValueError):
+            delivery.verify_release(self.release)
 
     def test_optional_tokenizer_assets_are_fingerprinted(self):
         for name in ('generation_config.json', 'vocab.json', 'merges.txt', 'special_tokens_map.json'):
@@ -205,6 +219,34 @@ class DeliveryTests(unittest.TestCase):
         self.assertEqual(self.config('manifest.json')['status'], 'preparing')
         with self.assertRaises(ValueError):
             delivery.verify_release(self.release)
+
+    def test_export_reserves_new_directory_and_uses_frozen_cpu_config(self):
+        import subprocess
+        self.prepare()
+        def exporter(command, **kwargs):
+            self.assertEqual(command[:2], ['llamafactory-cli', 'export'])
+            config = json.loads(Path(command[2]).read_bytes())
+            self.assertEqual(config['export_device'], 'cpu')
+            self.assertEqual(kwargs['env']['CUDA_VISIBLE_DEVICES'], '')
+            import shutil
+            for path in self.model.iterdir():
+                shutil.copyfile(path, self.release / 'merged-model' / path.name)
+            return subprocess.CompletedProcess(command, 0)
+        with patch.object(delivery.subprocess, 'run', side_effect=exporter) as process:
+            result = delivery.export_release(self.release)
+            self.assertEqual(result['status'], 'exported')
+            self.assertEqual(process.call_count, 1)
+            with self.assertRaises(FileExistsError):
+                delivery.export_release(self.release)
+            self.assertEqual(process.call_count, 1)
+
+    def test_export_failure_retains_state_and_does_not_allow_retry_in_place(self):
+        self.prepare()
+        with patch.object(delivery.subprocess, 'run', side_effect=OSError('fixture missing executable')):
+            self.assertEqual(delivery.export_release(self.release)['status'], 'failed')
+        self.assertEqual(self.config('export-state.json')['status'], 'failed')
+        with self.assertRaises(FileExistsError):
+            delivery.export_release(self.release)
 
 
 if __name__ == '__main__':

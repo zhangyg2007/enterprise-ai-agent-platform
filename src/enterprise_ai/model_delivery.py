@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import sys
+import subprocess
 import tempfile
 
 from .baseline import load_cases
@@ -48,6 +49,8 @@ def fingerprint_model(path: Path) -> dict:
             raise ValueError('Empty tokenizer configuration')
     index_path = path / 'model.safetensors.index.json'
     if index_path.exists():
+        if (path / 'model.safetensors').exists():
+            raise ValueError('Ambiguous single-file and sharded model layout')
         weights = _object(read_bounded(index_path), 'weight index').get('weight_map')
         if not isinstance(weights, dict) or not weights:
             raise ValueError('Missing weight_map')
@@ -76,6 +79,8 @@ def configurations(model: Path, adapter: Path, release: Path) -> dict:
               'stage': 'sft', 'finetuning_type': 'lora', 'trust_remote_code': False,
               'infer_backend': 'huggingface', 'infer_dtype': 'bfloat16',
               'flash_attn': 'sdpa', 'cutoff_len': 2048, **GENERATION}
+    # LF 0.9.4 accepts this only as a ChatModel.chat keyword, not a dataclass field.
+    common.pop('num_return_sequences')
     base = {**common, 'quantization_bit': 4, 'quantization_method': 'bitsandbytes',
             'quantization_type': 'nf4', 'double_quantization': True}
     return {
@@ -187,6 +192,57 @@ def prepare_release(training_run: Path, data_dir: Path, adapter_dir: Path,
     return verify_release(output)
 
 
+def export_release(release_dir: Path) -> dict:
+    """Run the fixed CPU export once; preserve failed attempts instead of overwriting."""
+    release = Path(release_dir).resolve()
+    frozen = verify_release(release)
+    config_raw = read_artifact(release, frozen, 'export.yaml')
+    target = release / 'merged-model'
+    if (release / 'export-state.json').exists():
+        raise FileExistsError('Export already attempted; prepare a new release')
+    target.mkdir(exist_ok=False)
+    state = {'status': 'exporting', 'exit_code': None, 'files': None,
+             'source_release_sha256': sha256(json_bytes(frozen)),
+             'config_sha256': sha256(config_raw)}
+    write_new(release / 'export-state.json', json_bytes(state))
+    try:
+        invocation = release / 'export-invocation.yaml'
+        write_new(invocation, config_raw)
+        with (release / 'export.log').open('xb') as log:
+            result = subprocess.run(['llamafactory-cli', 'export', str(invocation)],
+                                    env={**os.environ, 'CUDA_VISIBLE_DEVICES': ''},
+                                    stdout=log, stderr=subprocess.STDOUT, check=False)
+        state['exit_code'] = result.returncode
+        if result.returncode != 0:
+            raise ValueError('Factory export failed; inspect export.log')
+        if verify_release(release) != frozen:
+            raise ValueError('Source release changed during export')
+        state['files'] = fingerprint_model(target)
+        state['status'] = 'exported'
+    except Exception as exc:
+        state.update(status='failed', error_type=type(exc).__name__)
+    write_new(release / 'export-state.tmp', json_bytes(state))
+    os.replace(release / 'export-state.tmp', release / 'export-state.json')
+    return state
+
+
+def validate_export_state(state: dict, frozen: dict) -> None:
+    if (not isinstance(state, dict) or state.get('status') != 'exported'
+            or type(state.get('exit_code')) is not int or state['exit_code'] != 0
+            or state.get('source_release_sha256') != sha256(json_bytes(frozen))
+            or state.get('config_sha256') != frozen['artifacts']['export.yaml']
+            or not isinstance(state.get('files'), dict) or not state['files']):
+        raise ValueError('Missing or mismatched successful export evidence')
+
+
+def verify_export(release_dir: Path, frozen: dict) -> dict:
+    state = _object(read_bounded(Path(release_dir) / 'export-state.json'), 'export state')
+    validate_export_state(state, frozen)
+    if state['files'] != fingerprint_model(Path(frozen['merged_path'])):
+        raise ValueError('Exported model assets changed')
+    return state
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description='M07 model delivery preparation (no model loading)')
     commands = parser.add_subparsers(dest='command', required=True)
@@ -196,12 +252,18 @@ def main(argv=None) -> int:
     prepare.add_argument('--baseline-cases', type=Path, default=Path('data/samples/m04-intents.jsonl'))
     verify = commands.add_parser('verify')
     verify.add_argument('--release', type=Path, required=True)
+    export = commands.add_parser('export')
+    export.add_argument('--release', type=Path, required=True)
     args = parser.parse_args(argv)
     try:
-        value = (prepare_release(args.training_run, args.data, args.adapter_dir, args.output, args.baseline_cases)
-                 if args.command == 'prepare' else verify_release(args.release))
+        if args.command == 'prepare':
+            value = prepare_release(args.training_run, args.data, args.adapter_dir, args.output, args.baseline_cases)
+        elif args.command == 'export':
+            value = export_release(args.release)
+        else:
+            value = verify_release(args.release)
         print(json.dumps(value, ensure_ascii=False, indent=2))
-        return 0
+        return 2 if value.get('status') == 'failed' else 0
     except (ValueError, OSError, TypeError, KeyError, RecursionError) as exc:
         print(json.dumps({'error': type(exc).__name__, 'message': str(exc)}, ensure_ascii=False), file=sys.stderr)
         return 1

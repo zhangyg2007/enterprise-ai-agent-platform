@@ -135,11 +135,46 @@ class EvaluationTests(unittest.TestCase):
         self.assertGreater(summary['refusal_false_accepts'], 0)
 
     def test_bf16_merge_comparison_records_exported_identity(self):
-        import shutil
-        shutil.copytree(self.model, self.release / 'merged-model')
+        self.export_fixture()
         self.evaluate(variant='adapter-bf16')
         self.evaluate('after', 'merged')
         self.assertEqual(self.compare()['comparison'], 'export_regression')
+
+    def export_fixture(self):
+        import shutil
+        import subprocess
+        from enterprise_ai import model_delivery
+        def exporter(command, **kwargs):
+            for path in self.model.iterdir():
+                shutil.copyfile(path, self.release / 'merged-model' / path.name)
+            return subprocess.CompletedProcess(command, 0)
+        with patch.object(model_delivery.subprocess, 'run', side_effect=exporter):
+            self.assertEqual(model_delivery.export_release(self.release)['status'], 'exported')
+
+    def test_unexported_model_is_not_eligible_for_export_regression(self):
+        import shutil
+        shutil.copytree(self.model, self.release / 'merged-model')
+        summary = self.evaluate(variant='merged')
+        self.assertFalse(summary['comparison_eligible'])
+        self.assertEqual(summary['request_errors'], 48)
+
+    def test_replaced_exported_weights_are_rejected_before_generation(self):
+        self.export_fixture()
+        (self.release / 'merged-model/model-00001-of-00001.safetensors').write_bytes(b'replaced')
+        summary = self.evaluate(variant='merged')
+        self.assertFalse(summary['comparison_eligible'])
+        self.assertEqual(self.calls, [])
+
+    def test_changed_export_state_during_generation_invalidates_run(self):
+        self.export_fixture()
+        original = self.backend.chat
+        def changed(instance, text, system):
+            state = json.loads((self.release / 'export-state.json').read_bytes())
+            state['status'] = 'failed'
+            self.put(self.release / 'export-state.json', state)
+            return original(instance, text, system)
+        with patch.object(self.backend, 'chat', changed):
+            self.assertFalse(self.evaluate(variant='merged')['comparison_eligible'])
 
     def test_invalid_backend_reply_is_error_not_success(self):
         with patch.object(self.backend, 'chat', return_value={'text': '{}', 'finish_reason': 'stop',
