@@ -30,3 +30,5 @@ M07 新增文件（开发分支；真实模型验收待执行）
 | `docs/superpowers/plans/2026-10-20-m07-evaluation-serving.md` | M07 T1–T3 实施清单 | 跟踪开发进度 |
 | `docs/progress/2026-10-20-session-recovery.md` | 旧会话恢复时的文件、分支和验证状态快照 | 按记录日期理解，不代表最新交付状态 |
 | `docs/progress/2026-10-20-m07-execution.md` | 当前 M07 执行记录、决策及测试结果 | 中断后从这里接续 |
+| `src/enterprise_ai/model_eval.py` | 冻结题集评估、保存原始回答、重算指标及同精度比较 | `python -m enterprise_ai.model_eval --help`；真实推理在 Ubuntu 执行 |
+| `tests/test_model_eval.py` | 评估错误分母、题集/报告篡改、精度匹配和 LF 接口测试 | 假后端测试，不代表模型效果成绩 |
