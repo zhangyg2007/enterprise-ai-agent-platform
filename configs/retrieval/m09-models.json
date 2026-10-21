@@ -1,0 +1,9 @@
+{
+  "schema_version": "m09-models-v1",
+  "embedding": {"repo_id": "BAAI/bge-m3", "revision": "5617a9f61b028005a4858fdac845db406aefb181", "dimension": 1024, "pooling": "cls", "normalized": true},
+  "reranker": {"repo_id": "BAAI/bge-reranker-v2-m3", "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e", "scoring": "sigmoid-single-logit"},
+  "max_tokens": 1024,
+  "batch_size": 4,
+  "default_device": "cpu",
+  "runtime_status": "candidate-environment-real-model-verification-pending"
+}
