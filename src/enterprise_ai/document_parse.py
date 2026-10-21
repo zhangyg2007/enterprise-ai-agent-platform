@@ -9,6 +9,8 @@ from xml.etree import ElementTree as ET
 MAX_BYTES = 10 * 1024 * 1024
 MAX_TEXT = 500_000
 W = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
+M = '{http://schemas.openxmlformats.org/officeDocument/2006/math}'
+PARSER_REVISION = 'm08-parser-v2'
 
 
 def _text(value):
@@ -70,7 +72,7 @@ def _check_docx(raw):
                                    'altChunk','sdt','fldSimple','fldChar','instrText',
                                    'footnoteReference','endnoteReference','sym','txbxContent'}
                     for el in root.iter():
-                        if el.tag in {W+n for n in unsupported}:
+                        if el.tag in {W+n for n in unsupported} | {M+'oMath',M+'oMathPara'}:
                             raise ValueError('unsupported DOCX content: ' + el.tag.split('}')[-1])
                         if el.tag == W+'tbl' and any(x.tag == W+'tbl' for x in list(el.iter())[1:]):
                             raise ValueError('nested DOCX tables unsupported')

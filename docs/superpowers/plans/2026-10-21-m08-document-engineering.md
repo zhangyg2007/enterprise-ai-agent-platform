@@ -31,10 +31,10 @@ Files: src/enterprise_ai/document_samples.py、document_parse.py；tests/test_do
 
 Interfaces: generate_corpus(output,count=30,formats='mixed')->dict；parse_document(raw,suffix)->list[dict]。字段与限制按Spec。
 
-- [ ] RED：生成目录保护/30篇元数据/两租户/确定性；解析MD围栏、UTF8/NUL、真实PDF/DOCX、空/坏/超限文档。
-- [ ] 实现纯标准库MD路径及延迟导入的格式库路径；文档说明不支持布局。
-- [ ] GREEN：定向核心测试与预置依赖格式测试；生成并检查样例视觉及提取结果。
-- [ ] 提交并同步T1与Filelist。
+- [x] RED：生成目录保护/30篇元数据/两租户/确定性；解析MD围栏、UTF8/NUL、真实PDF/DOCX、空/坏/超限文档。
+- [x] 实现纯标准库MD路径及延迟导入的格式库路径；文档说明不支持布局。
+- [x] GREEN：定向核心测试与预置依赖格式测试；PDF视觉通过，DOCX缺少LibreOffice版面未验收，已明确记录。
+- [x] 提交并同步T1与Filelist：3ba1ae6。
 
 ### T2 切块与版本流水线
 
@@ -42,16 +42,16 @@ Files: src/enterprise_ai/document_pipeline.py；tests/test_document_pipeline.py�
 
 Interfaces: chunk_segments(metadata,segments,max_chars=400,overlap=40)；ingest(catalog_path,source_root,state_path,report_path,max_chars=400,overlap=40)；export_chunks(state_path,output_path,tenant_id,roles,as_of)。
 
-- [ ] RED：chunk覆盖/边界/稳定ID；摘要快照/路径拒绝；重跑、冲突/旧版本、更新/删除；ACL/时间/租户隔离；失败批次原子性与报告；不同pipeline_id拒绝幂等。
-- [ ] 实现schema严格验证、SQLite版本/head/chunks事务与独占导出。
-- [ ] GREEN：定向测试、30篇三格式真实集成（只用预置库），保留报告。
-- [ ] 提交并同步T2与Filelist。
+- [x] RED：chunk覆盖/边界/稳定ID；摘要快照/路径拒绝；重跑、冲突/旧版本、更新/删除；ACL/时间/租户隔离；失败批次原子性与报告；不同pipeline_id拒绝幂等。
+- [x] 实现schema严格验证、SQLite版本/head/chunks事务与独占导出。
+- [x] GREEN：定向测试、30篇三格式真实集成（只用预置库），保留报告。
+- [x] 提交并同步T2与Filelist：aa6c479。
 
 ### T3 增量实验与教程
 
 Files: src/enterprise_ai/document_demo.py；tests/test_document_demo.py；docs/tutorials/08-document-engineering.md；docs/runbooks/m08-document-handoff.md；docs/validation/2026-10-21-m08.md；进度ledger与导航/版本。
 
-- [ ] RED→GREEN：30篇基线、幂等、变更内容/ACL、删除、坏摘要回滚与租户角色导出断言。
-- [ ] 完成第8课、质量模板和M09契约说明；更新Filelist/README/ROADMAP/CHANGELOG/VERSION。
-- [ ] 全量离线回归、格式集成、文档语法链接检查，独立审核并按失败复现修复。
+- [x] RED→GREEN：30篇基线、幂等、变更内容/ACL、删除、坏摘要回滚与租户角色导出断言。
+- [x] 完成第8课、质量模板和M09契约说明；更新Filelist/README/ROADMAP/CHANGELOG/VERSION。
+- [x] 全量195项通过、格式集成、文档语法链接检查；独立审阅唯一P2按解析/事务回归RED→GREEN修复，无延期Minor。
 - [ ] 同步最终提交与Filelist，回读GitHub SHA；创建依赖M07的草稿PR，不合并/部署。

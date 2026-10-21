@@ -70,6 +70,25 @@ class ParseTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'empty|OCR'):
             parse_document(out.getvalue(), '.pdf')
 
+    @unittest.skipUnless(importlib.util.find_spec('docx'), 'python-docx optional')
+    def test_docx_equation_must_not_be_silently_dropped(self):
+        from docx import Document
+        from docx.oxml import OxmlElement
+        for equation_tag in ('m:oMath','m:oMathPara'):
+            with self.subTest(tag=equation_tag):
+                doc = Document()
+                paragraph = doc.add_paragraph('Charge calculation: ')
+                math = OxmlElement('m:oMath')
+                run = OxmlElement('m:r'); text = OxmlElement('m:t')
+                text.text = 'fee = principal * 0.15'
+                run.append(text); math.append(run)
+                if equation_tag=='m:oMathPara':
+                    wrapper = OxmlElement(equation_tag); wrapper.append(math); math=wrapper
+                paragraph._p.append(math)
+                raw = io.BytesIO(); doc.save(raw)
+                with self.assertRaisesRegex(ValueError,'unsupported DOCX'):
+                    parse_document(raw.getvalue(),'.docx')
+
 
 if __name__ == '__main__':
     unittest.main()

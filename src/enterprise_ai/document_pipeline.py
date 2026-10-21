@@ -12,7 +12,7 @@ import sys
 from contextlib import closing
 from pathlib import Path
 
-from .document_parse import MAX_BYTES, parse_document
+from .document_parse import MAX_BYTES, PARSER_REVISION, parse_document
 from .ollama import strict_json_loads
 
 ROLES = {'employee','sales','hr','procurement'}
@@ -112,7 +112,7 @@ def _pipeline(suffix,max_chars,overlap):
         version = importlib.metadata.version(package) if package else 'stdlib'
     except importlib.metadata.PackageNotFoundError as exc:
         raise ValueError('install requirements/m08-documents.txt') from exc
-    return f'm08-parser-v1:{suffix.lower()}:{version}:chars-v1:{max_chars}:{overlap}'
+    return f'{PARSER_REVISION}:{suffix.lower()}:{version}:chars-v1:{max_chars}:{overlap}'
 
 
 def chunk_segments(metadata,segments,*,max_chars=400,overlap=40):

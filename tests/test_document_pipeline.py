@@ -1,5 +1,7 @@
 import copy
 import hashlib
+import importlib.util
+import io
 import json
 import sqlite3
 import tempfile
@@ -166,6 +168,35 @@ class PipelineTests(unittest.TestCase):
         with self.assertRaises(FileExistsError):
             export_chunks(self.state,out,tenant_id=1,roles=['sales'],as_of='2026-01-01')
         self.assertEqual(out.read_text(),'keep')
+
+    @unittest.skipUnless(importlib.util.find_spec('docx'), 'python-docx optional')
+    def test_formula_rejection_preserves_existing_heads(self):
+        from docx import Document
+        from docx.oxml import OxmlElement
+        self.ingest()
+        before = self.export()
+        doc = Document(); paragraph = doc.add_paragraph('Charge calculation: ')
+        math = OxmlElement('m:oMath'); run = OxmlElement('m:r'); text = OxmlElement('m:t')
+        text.text = 'fee = principal * 0.15'; run.append(text); math.append(run); paragraph._p.append(math)
+        raw = io.BytesIO(); doc.save(raw)
+        path = self.source/'formula.docx'; path.write_bytes(raw.getvalue())
+        cat = copy.deepcopy(self.catalog)
+        cat['documents'][0].update(version=2,roles=['employee'])
+        cat['documents'][1].update(version=2,source_path='formula.docx',sha256=hashlib.sha256(raw.getvalue()).hexdigest())
+        self.assertEqual(self.ingest(cat)['status'],'failed')
+        self.assertEqual(before,self.export())
+        with closing(sqlite3.connect(self.state)) as db:
+            self.assertEqual(db.execute('SELECT COUNT(*) FROM versions').fetchone()[0],30)
+
+    def test_report_write_failure_recovers_with_idempotent_new_report(self):
+        with patch('enterprise_ai.document_pipeline._write',side_effect=OSError('disk full')):
+            with self.assertRaises(OSError):
+                self.ingest()
+        # The commit succeeded; no misleading failed/no-changes report is returned.
+        self.assertTrue(self.export())
+        result = self.ingest()
+        self.assertEqual(result['status'],'ok')
+        self.assertEqual(result['unchanged'],30)
 
 
 if __name__ == '__main__':

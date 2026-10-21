@@ -41,7 +41,7 @@ M07 新增文件（开发分支；真实模型验收待执行）
 
 本批离线验证：173项测试通过；真实模型训练效果、导出与服务验收待 Ubuntu 执行。课程批次 0.1.4.0，最新内容在 codex/m07-evaluation-serving 开发分支，合并状态以 PR 为准。
 
-M08 新增文件（codex/m08-document-engineering；当前完成T1检查点，后续任务进行中）
+M08 新增文件（codex/m08-document-engineering；以下保留分阶段检查点，最终状态见末尾）
 
 | 文件 | 用途 | 使用方式 |
 | -- | -- | -- |
@@ -66,3 +66,17 @@ M08 T1验证：8项通过；PDF代表样例已视觉检查；DOCX文本/结构�
 | `tests/test_document_pipeline.py` | 覆盖范围、输入摘要、批次回滚、更新删除和权限隔离回归 | unittest；临时SQLite，无数据库服务 |
 
 M08 T2验证：共18项测试通过；30篇真实三格式导入及授权导出通过。教程与最终审阅尚未完成。
+
+| M08 T3新增文件 | 用途 | 使用方式 |
+| -- | -- | -- |
+| `src/enterprise_ai/document_demo.py` | 完整演示基线、重跑、正文/权限更新、删除与坏摘要回滚 | `python -m enterprise_ai.document_demo --output 新目录` |
+| `tests/test_document_demo.py` | 验证30篇基线、32个历史版本、7项场景检查和目录保护 | unittest |
+| `docs/tutorials/08-document-engineering.md` | 第8课：概念、Ubuntu操作、元数据、增量实验、异常恢复与练习 | 主要学习入口 |
+| `docs/runbooks/m08-document-handoff.md` | 来源、环境、人工抽样、更新删除证据和M09交接模板 | 复制填写脱敏结果 |
+| `docs/validation/2026-10-21-m08.md` | 已执行验证、独立审阅结果及服务器待验收事项 | 判断结论范围 |
+
+README.md、docs/ROADMAP.md、CHANGELOG.md、VERSION同步更新至M08课程批次0.1.5.0。M09–M13仍为计划。以上分阶段记录保留历史，最新验证以M08验证记录为准。
+
+独立审阅修复：document_parse.py明确拒绝Office Math公式，防止正文被不完整解析；document_pipeline.py绑定m08-parser-v2；两组对应测试覆盖公式拒绝、批次head不变及报告失败恢复。M08定向22项通过，最终全量验证和GitHub提交状态见验证/进度文件。
+
+M08最终离线验收：195项全量通过，无skip；最终v2解析器真实三格式导入与7项增量检查通过；独立审阅问题已修复。第8课和文件说明已齐备。Ubuntu安装、DOCX版面及生产/RAG验收仍未执行，详见docs/validation/2026-10-21-m08.md。
