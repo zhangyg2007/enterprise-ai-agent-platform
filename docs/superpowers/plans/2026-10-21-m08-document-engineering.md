@@ -54,4 +54,4 @@ Files: src/enterprise_ai/document_demo.py；tests/test_document_demo.py；docs/t
 - [x] RED→GREEN：30篇基线、幂等、变更内容/ACL、删除、坏摘要回滚与租户角色导出断言。
 - [x] 完成第8课、质量模板和M09契约说明；更新Filelist/README/ROADMAP/CHANGELOG/VERSION。
 - [x] 全量195项通过、格式集成、文档语法链接检查；独立审阅唯一P2按解析/事务回归RED→GREEN修复，无延期Minor。
-- [ ] 同步最终提交与Filelist，回读GitHub SHA；创建依赖M07的草稿PR，不合并/部署。
+- [x] 最终成果810d3b8与Filelist已同步，GitHub SHA一致；草稿PR #6依赖M07，未合并/部署。

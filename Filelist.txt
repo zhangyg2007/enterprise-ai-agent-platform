@@ -80,3 +80,5 @@ README.md、docs/ROADMAP.md、CHANGELOG.md、VERSION同步更新至M08课程批�
 独立审阅修复：document_parse.py明确拒绝Office Math公式，防止正文被不完整解析；document_pipeline.py绑定m08-parser-v2；两组对应测试覆盖公式拒绝、批次head不变及报告失败恢复。M08定向22项通过，最终全量验证和GitHub提交状态见验证/进度文件。
 
 M08最终离线验收：195项全量通过，无skip；最终v2解析器真实三格式导入与7项增量检查通过；独立审阅问题已修复。第8课和文件说明已齐备。Ubuntu安装、DOCX版面及生产/RAG验收仍未执行，详见docs/validation/2026-10-21-m08.md。
+
+GitHub同步记录（2026-10-21）：M08成果提交810d3b8d65fec614df9c72f51669be40936ede08已核对一致；草稿PR #6：https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/6 ，依赖M07分支。后续恢复从docs/progress/2026-10-21-m08-execution.md开始，下一模块M09。本文件新增说明和最终同步状态与课程文件一起提交。

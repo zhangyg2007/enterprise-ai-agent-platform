@@ -29,7 +29,7 @@
 
 11. 阅读 [第8课：企业文档工程](docs/tutorials/08-document-engineering.md)，生成三格式合成文档，验证切块、更新、撤权和删除；不需要GPU或数据库服务。
 
-第 0–8 课已撰写。M04–M05 已在 [PR #3](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/3) 合并；M06 [PR #4](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/4)、M07 [PR #5](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/5) 与 M08 的合并状态以 GitHub PR 为准，不能仅凭 VERSION 判断。M09–M13 尚待补齐。文件用途见 [Filelist.txt](Filelist.txt)，M08进度见 [执行记录](docs/progress/2026-10-21-m08-execution.md)。
+第 0–8 课已撰写。M04–M05 已在 [PR #3](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/3) 合并；M06 [PR #4](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/4)、M07 [PR #5](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/5) 与 M08 [PR #6](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/6) 的合并状态以 GitHub PR 为准，不能仅凭 VERSION 判断。M09–M13 尚待补齐。文件用途见 [Filelist.txt](Filelist.txt)，M08进度见 [执行记录](docs/progress/2026-10-21-m08-execution.md)。
 
 ## 本批文件导航
 
