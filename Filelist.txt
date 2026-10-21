@@ -40,3 +40,22 @@ M07 新增文件（开发分支；真实模型验收待执行）
 2026-10-21 M07 修复说明：model_delivery.py 拒绝混合权重布局并保存绑定来源的导出状态；model_eval.py 核对成功导出及运行前后产物指纹；相关 tests 覆盖遗漏权重、未导出/被替换产物及配置兼容性。验证结果与服务器待执行项见 docs/validation/2026-10-20-m07.md。
 
 本批离线验证：173项测试通过；真实模型训练效果、导出与服务验收待 Ubuntu 执行。课程批次 0.1.4.0，最新内容在 codex/m07-evaluation-serving 开发分支，合并状态以 PR 为准。
+
+M08 新增文件（codex/m08-document-engineering；当前完成T1检查点，后续任务进行中）
+
+| 文件 | 用途 | 使用方式 |
+| -- | -- | -- |
+| `docs/superpowers/specs/2026-10-21-m08-document-engineering-design.md` | 文档解析、版本、权限与失败边界设计 | 理解M08接口 |
+| `docs/superpowers/plans/2026-10-21-m08-document-engineering.md` | T1样例解析、T2事务、T3教程验收计划 | 跟踪开发 |
+| `docs/progress/2026-10-21-m08-execution.md` | 基线、决策和验证记录 | 中断恢复入口 |
+| `src/enterprise_ai/document_samples.py` | 生成30/300/1000篇CRM/HCM/SCM合成文档与摘要清单 | `python -m enterprise_ai.document_samples --help` |
+| `src/enterprise_ai/document_parse.py` | 从受检字节解析Markdown/PDF/DOCX，返回有来源定位的文本块 | 流水线内部调用 |
+| `tests/test_document_samples.py` | 生成目录保护、元数据、可重复字节与真实格式回读测试 | unittest |
+| `tests/test_document_parse.py` | 标题/围栏/页码/表格顺序及不支持内容、大小限制测试 | unittest |
+| `requirements/m08-documents.txt` | 独立文档处理环境的固定依赖 | 按第8课安装 |
+| `data/samples/documents/crm.md` | 虚构销售报价规则示例 | 对照源文本与块 |
+| `data/samples/documents/hcm.md` | 虚构入职规则示例 | 不是真实人事制度 |
+| `data/samples/documents/scm.md` | 虚构补货规则示例 | 对照来源和权限 |
+| `docs/data-cards/m08-documents.md` | 合成来源、重复模板、支持格式和验收限制 | 使用样例前阅读 |
+
+M08 T1验证：8项通过；PDF代表样例已视觉检查；DOCX文本/结构回读通过，版面因缺少LibreOffice未验收。
