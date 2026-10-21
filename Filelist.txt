@@ -59,3 +59,10 @@ M08 新增文件（codex/m08-document-engineering；当前完成T1检查点，�
 | `docs/data-cards/m08-documents.md` | 合成来源、重复模板、支持格式和验收限制 | 使用样例前阅读 |
 
 M08 T1验证：8项通过；PDF代表样例已视觉检查；DOCX文本/结构回读通过，版面因缺少LibreOffice未验收。
+
+| M08 T2新增文件 | 用途 | 使用方式 |
+| -- | -- | -- |
+| `src/enterprise_ai/document_pipeline.py` | 带定位的字符切块、SQLite版本事务、显式删除和租户/角色/有效期导出 | `python -m enterprise_ai.document_pipeline --help` |
+| `tests/test_document_pipeline.py` | 覆盖范围、输入摘要、批次回滚、更新删除和权限隔离回归 | unittest；临时SQLite，无数据库服务 |
+
+M08 T2验证：共18项测试通过；30篇真实三格式导入及授权导出通过。教程与最终审阅尚未完成。
