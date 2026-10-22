@@ -16,6 +16,10 @@
 
 M10开发分支新增[第10课](docs/tutorials/10-langgraph-basics.md)：真实StateGraph、受控只读工具、有限重试与节点流；[服务器验收表](docs/runbooks/m10-agent-handoff.md)与[本地验证](docs/validation/2026-10-22-m10.md)分开记录。M09学习分支仍保持第0–9课稳定快照。
 
+GitHub默认main只见第0–5课的原因、M06–M10远端分支与待合并PR链见[发布排查记录](docs/progress/2026-10-22-github-publication-audit.md)。分支同步与合并main分开记录，合并确认待答复。
+
+M11开发先提供[T1业务事务基础实验](docs/runbooks/m11-t1-business-ledger.md)：合成SQLite报价、休假、补货的审批、幂等、版本冲突和原子回滚。[本地验证](docs/validation/2026-10-22-m11-t1.md)与[后续计划](docs/superpowers/plans/2026-10-22-m11-enterprise-workflows.md)可追踪；持久图和正式PostgreSQL仍待实施，尚未交付完整第11课。
+
 ## 从这里开始
 
 1. 阅读 [课程路线与模块交付计划](docs/ROADMAP.md)。

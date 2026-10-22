@@ -171,3 +171,21 @@ M10实现与教材文件（本地开发候选，未冒充服务器验收）
 M10验证检查点：真实LangGraph完整227项通过（76.206秒，无skip），静态53Python/57Shell/7Python示例/111链接通过，实际CLI成功/重试通过；独立review进行中。
 
 M10最终门禁：227项完整通过、无skip；53Python/57Shell/7示例/111链接通过；独立review无需行动问题。真实服务器依验收表待执行。用户授权的同步使用独立M10分支，保持M09学习分支不变。
+
+M11开始（codex/m11-enterprise-workflows；尚未整章交付）
+| 文件 | 用途 | 使用方式 |
+| -- | -- | -- |
+| `docs/superpowers/specs/2026-10-22-m11-enterprise-workflows-design.md` | 三业务审批、幂等、资源版本与恢复设计 | T1基础账本/T2持久图/T3正式PG分阶段 |
+| `docs/superpowers/plans/2026-10-22-m11-enterprise-workflows.md` | 实施与验收清单 | 不把T1当整章完成 |
+| `docs/progress/2026-10-22-m11-execution.md` | 当前状态与GitHub主线修复记录 | 中断恢复入口 |
+| `src/enterprise_ai/workflow_store.py` | T1独立SQLite合成业务账本 | 不连接M02，不充当生产认证 |
+| `tests/test_workflow_store.py` | 三业务、权限、幂等、实际并发和回滚10项验证 | `python -m unittest tests.test_workflow_store -v` |
+| `docs/runbooks/m11-t1-business-ledger.md` | 可执行基础实验与手算预期 | T2/T3尚待实施 |
+| `docs/validation/2026-10-22-m11-t1.md` | 本地验证证据及限制 | 237项完整回归通过，独立review无行动问题 |
+| `docs/progress/2026-10-22-github-publication-audit.md` | M06+默认页缺失原因、PR链与修复方案 | 合并main确认待答复 |
+
+M11 T1：10项定向通过，完整237项通过（77.487秒，无skip）；55Python/59Shell/8示例/121链接/3配置检查通过；真实独立进程重开SQLite重试保持3笔效果。仅T1开发候选，不代表M11整章完成。
+
+本批同步更新README、CHANGELOG（未发布）、plan.txt与Filelist；VERSION保持0.1.7.0，不把T1升级为M11整章交付。
+
+T1最终门禁：独立review无Critical/Important/可行动Minor，额外并发冲突/越权回放/审计末端故障回滚探针通过。同步独立开发分支与草稿PR，不合并main。下一步T2持久图，T3正式PG；主线PR#4–#8合并确认仍待答复。
