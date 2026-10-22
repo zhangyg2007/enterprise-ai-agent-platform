@@ -1,0 +1,7 @@
+# Core versions verified in isolated Windows Python3.12; Ubuntu acceptance remains pending.
+langgraph==1.0.2
+langchain-core==1.6.13
+langgraph-checkpoint==3.0.1
+langgraph-prebuilt==1.0.13
+langgraph-sdk==0.2.15
+psycopg[binary]==3.2.10

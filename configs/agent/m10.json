@@ -1,0 +1,13 @@
+{
+  "schema_version": "m10-course-defaults-v1",
+  "langgraph": "1.0.2",
+  "planning_calls": 1,
+  "tool_attempts": 2,
+  "soft_seconds": 60,
+  "http_socket_seconds": 30,
+  "sql_statement_ms": 5000,
+  "request_characters": 500,
+  "result_bytes": 65536,
+  "trusted_teaching_date": "2026-10-22",
+  "status": "reference-record-not-auto-loaded-cli-config"
+}

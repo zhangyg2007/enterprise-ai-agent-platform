@@ -1,6 +1,6 @@
 # 课程路线与模块交付计划
 
-创建日期：2026-10-15；更新日期：2026-10-22。状态：当前开发工作区提供 M01–M09 代码与教程；M04–M05 已合并，M06/M07/M08 合并状态以 GitHub PR 为准。Ubuntu 服务器验收待执行。M09已同步学习分支codex/m09-enterprise-rag、尚未合并；M10–M13仍为计划。
+创建日期：2026-10-15；更新日期：2026-10-22。状态：当前开发工作区提供 M01–M10 代码与教程；M04–M05 已合并，M06/M07/M08 合并状态以 GitHub PR 为准。Ubuntu 服务器验收待执行。M09已同步学习分支codex/m09-enterprise-rag、尚未合并；M10为本轮开发候选，M11–M13仍为计划。
 
 ## 1. 学习目标和主线选择
 
@@ -95,3 +95,5 @@ M06 提供固定版本 Qwen3-4B-Instruct-2507 的 QLoRA 候选配置、训练快
 - 质量报告保留样本数、模型/数据/代码版本、配置、硬件、原始结果和失败案例。
 
 M09本地新增完整head索引包、权限/日期检索、关键词/向量/RRF与可选重排、pgvector适配、24题公开开发集及六项增量实验。见[第9课](tutorials/09-enterprise-rag.md)、[数据卡](data-cards/m09-retrieval.md)、[服务器手册](runbooks/m09-rag-handoff.md)和[验证记录](validation/2026-10-22-m09.md)。fixture只验证流程；真实BGE、数据库迁移/RLS/HNSW与Ubuntu安装仍待执行。
+
+M10提供真实StateGraph的单次规划/只读工具/条件边/重试/节点updates，见[第10课](tutorials/10-langgraph-basics.md)和[验收表](runbooks/m10-agent-handoff.md)。模型只能提议严格参数，确定性工具读取DB或M09证据；本章不包含业务写入、checkpoint持久化或生产认证。

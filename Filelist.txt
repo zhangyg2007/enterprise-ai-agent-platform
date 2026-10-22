@@ -174,3 +174,29 @@ M09本批最终本地候选：217项全量通过；独立review无Critical/Impor
 同步门禁：217项新全量通过（84.337秒），独立审阅发现的旧single-branch更新问题已复现并修复，临时Git仓库验证通过；49个Shell块及101链接检查通过。
 
 GitHub已回读核对9515799：完整M09课程提交与远端tree一致。document-release独立审计后同步README/ROADMAP/plan当前状态；真实服务器仍待验收。
+
+M10开始（codex/m10-langgraph-basics，M09学习分支保持稳定）
+| 文件 | 用途 | 使用方式 |
+| -- | -- | -- |
+| `docs/superpowers/specs/2026-10-22-m10-langgraph-design.md` | 已确认课程范围内的状态、工具、预算与后端设计 | 构建依据 |
+| `docs/superpowers/plans/2026-10-22-m10-langgraph.md` | T1运行时、T2工具、T3实操与门禁 | 开发清单 |
+| `docs/progress/2026-10-22-m10-execution.md` | 当前实施与证据记录 | 恢复入口 |
+
+M10实现与教材文件（本地开发候选，未冒充服务器验收）
+| 文件 | 用途 | 使用方式 |
+| -- | -- | -- |
+| `src/enterprise_ai/agent.py` | Principal、严格决策、预算节点、真实StateGraph与规划器 | 教程10第1节对照源码 |
+| `src/enterprise_ai/agent_tools.py` | 显式合成数据、真实DB只读查询与M09检索适配 | 不支持写入或任意SQL |
+| `src/enterprise_ai/agent_cli.py` | 新目录内运行fixture/真实模型模式并保存events/state/summary | `python -m enterprise_ai.agent_cli --help` |
+| `tests/test_agent.py` | 实际图、路由、ACL、预算、重试及输出边界 | 需安装m10依赖 |
+| `tests/test_agent_tools.py` | 本人查询SQL、读者身份、真实M09管线/旧包/租户 | DB连接替身不代表真实DB验收 |
+| `tests/test_agent_cli.py` | 五种CLI实验及真实Ollama客户端协议边界 | 模拟网络不代表真实模型质量 |
+| `requirements/m10-agent.txt` | 固定核心框架依赖与psycopg | 独立环境按第10课安装 |
+| `configs/agent/m10.json` | 教学默认预算的参考记录，CLI不自动加载 | 理解上限与参数 |
+| `docs/tutorials/10-langgraph-basics.md` | 第10课：离线图、失败路径、真实模型/DB/RAG | 逐段执行并检查预期 |
+| `docs/runbooks/m10-agent-handoff.md` | 服务器待验收表与跨会话交接 | 保存真实运行证据 |
+| `docs/validation/2026-10-22-m10.md` | 已执行本地验证、review及未验证事项 | 判断结论边界 |
+
+M10验证检查点：真实LangGraph完整227项通过（76.206秒，无skip），静态53Python/57Shell/7Python示例/111链接通过，实际CLI成功/重试通过；独立review进行中。
+
+M10最终门禁：227项完整通过、无skip；53Python/57Shell/7示例/111链接通过；独立review无需行动问题。真实服务器依验收表待执行。用户授权的同步使用独立M10分支，保持M09学习分支不变。
