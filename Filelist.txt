@@ -99,3 +99,47 @@ M09 T1新增文件（codex/m09-enterprise-rag；后续阶段进行中）
 | `requirements/m09-rag.txt` | 独立RAG环境候选依赖 | 后续按第9课安装 |
 
 T1定向验证11项通过；真实BGE、PostgreSQL和RAG质量尚未实测。
+
+2026-10-22 第三会话恢复补充（以下为当前状态）
+
+| 文件 | 用途 | 使用方式 |
+| -- | -- | -- |
+| `docs/progress/2026-10-22-session3-recovery.md` | 两个旧会话核查、真实分支/PR状态、当前验证与后续规划 | 当前首要恢复入口 |
+| `src/enterprise_ai/rag_pg.py` | M09 T2数据库导入与检索实现，恢复时未提交 | 待独立审阅及Ubuntu验收 |
+| `infra/postgres/migrations/020-m09-rag.sql` | M09 schema、角色权限及向量检索迁移，恢复时未提交 | 真实数据库尚未执行 |
+| `tests/test_rag_pg.py` | M09 T2连接替身与SQL契约测试，恢复时未提交 | 不代替数据库集成测试 |
+| `reports/local/session3-rag-tests.txt` | 本轮17项定向测试原始证据，Git忽略 | 本地查阅 |
+| `../../reports/local/project-memory.md` | 项目根目录本地环境记忆，Git忽略 | 新实操会话先读，不上传 |
+
+本轮M09索引/检索/数据库契约17项通过（10.756秒）。T1已提交4373618；T2已有实现但未提交、未完成独立review和真实库验收；T3与第9课尚未交付。M10–M13待开发。
+
+M09 T3及第9课（2026-10-22，本地候选；未推送）
+
+| 文件 | 用途 | 使用方式 |
+| -- | -- | -- |
+| `src/enterprise_ai/rag_eval.py` | 文档级检索评估、错误分母、报告来源绑定与六项撤权/删除重建实验 | `python -m enterprise_ai.rag_eval demo/eval --help` |
+| `tests/test_rag_eval.py` | 重复文档排名、异常分母、引用、标签、来源变化与完整增量实验 | unittest |
+| `data/samples/m09-retrieval.json` | 固定24题公开合成开发集，两租户各12题 | 按索引租户选择题目，非隐藏测试 |
+| `docs/tutorials/09-enterprise-rag.md` | 第9课：离线实验、真实BGE、评估、pgvector、权限及恢复 | Ubuntu分段执行，核对每段预期 |
+| `docs/data-cards/m09-retrieval.md` | 题集来源、标签、指标分母和使用边界 | 评估前阅读 |
+| `docs/runbooks/m09-rag-handoff.md` | 服务器验收表与跨会话交接 | 用真实命令/退出码/脱敏输出填写 |
+| `docs/validation/2026-10-22-m09.md` | 本轮测试、独立审阅及未验证项 | 判断交付结论边界 |
+
+README、ROADMAP、CHANGELOG、VERSION同步为M09本地候选0.1.6.0。未执行GitHub发布/合并/部署；服务器验收状态以runbook实际证据为准。早先“第9课待补”的记录是历史状态。
+
+M09本轮verification：217项全量通过，静态检查47Python/43Shell/5Python示例/92链接/3配置通过；独立review进行中。六份fixture报告不能当真实模型成绩；详见验证记录。
+
+M09本批最终本地候选：217项全量通过；独立review无Critical/Important、两项Minor已修订；修订后22项RAG测试通过，最终静态47Python/46Shell/6Python示例/92链接/3配置通过。第9课和服务器验收表可开始实操；真实BGE/PostgreSQL/Ubuntu仍未验证。六份最终题集报告在reports/local/m09-reviewed-*；历史指标不代表当前题集。下一教材M10，未推送/合并。
+
+2026-10-22 计划一致性核对：plan.txt已整理为M00–M13总范围、模块状态、实施差异、原目标待闭环和扩展边界，替换遗留17项测试状态为最终217/22项证据。明确480条/70-20-10与早期数据目标的差异、四组模型/RAG对照及业务表/审批仍待补；未新增必修模块。
+
+2026-10-22 GitHub同步批次（用户已授权）
+
+| 文件 | 用途 | 使用方式 |
+| -- | -- | -- |
+| `plan.txt` | 可随仓库获取的M00–M13总计划、差异和后续边界；使用仓库相对路径 | 服务器学习前阅读 |
+| `docs/runbooks/server-start.md` | 获取完整第0–9课的分支、干净仓库更新、解释器检查与学习顺序 | 克隆前/实操前先读 |
+
+本批按codex/m09-enterprise-rag同步，不合并main，不更改服务器；本地环境记忆仍被忽略。Git连接失败时通过GitHub API上传同一commit/tree，必须回读确认。
+
+同步门禁：217项新全量通过（84.337秒），独立审阅发现的旧single-branch更新问题已复现并修复，临时Git仓库验证通过；49个Shell块及101链接检查通过。

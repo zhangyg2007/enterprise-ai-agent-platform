@@ -1,0 +1,342 @@
+{
+  "schema_version": "m09-cases-v1",
+  "kind": "public-synthetic-development-set",
+  "cases": [
+    {
+      "id": "t1-quote",
+      "tenant_id": 1,
+      "query": "折扣超过10%需要谁审批",
+      "roles": [
+        "sales"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 1,
+          "document_id": "crm-0001",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t1-contract",
+      "tenant_id": 1,
+      "query": "签署后两个工作日内合同归档",
+      "roles": [
+        "sales"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 1,
+          "document_id": "crm-0003",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t1-customer",
+      "tenant_id": 1,
+      "query": "年度采购额50万元重点客户",
+      "roles": [
+        "sales"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 1,
+          "document_id": "crm-0002",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t1-leave",
+      "tenant_id": 1,
+      "query": "休假直属负责人审核",
+      "roles": [
+        "hr"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 1,
+          "document_id": "hcm-0007",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t1-job",
+      "tenant_id": 1,
+      "query": "岗位变更系统访问角色",
+      "roles": [
+        "hr"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 1,
+          "document_id": "hcm-0010",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t1-stock",
+      "tenant_id": 1,
+      "query": "库存安全线20件补货",
+      "roles": [
+        "procurement"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 1,
+          "document_id": "scm-0011",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t1-arrival",
+      "tenant_id": 1,
+      "query": "仓库核对数量外观",
+      "roles": [
+        "procurement"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 1,
+          "document_id": "scm-0013",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t1-purchase",
+      "tenant_id": 1,
+      "query": "采购金额3万元主管审批",
+      "roles": [
+        "procurement"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 1,
+          "document_id": "scm-0014",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t1-wrong-role",
+      "tenant_id": 1,
+      "query": "报价折扣审批",
+      "roles": [
+        "employee"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": []
+    },
+    {
+      "id": "t1-not-effective",
+      "tenant_id": 1,
+      "query": "报价审批",
+      "roles": [
+        "sales"
+      ],
+      "as_of": "2025-12-31",
+      "expected_documents": []
+    },
+    {
+      "id": "t1-absent",
+      "tenant_id": 1,
+      "query": "ZXQ987",
+      "roles": [
+        "sales"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": []
+    },
+    {
+      "id": "t1-other-tenant",
+      "tenant_id": 1,
+      "query": "只查租户2的crm-0016报价审批制度",
+      "roles": [
+        "sales"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": []
+    },
+    {
+      "id": "t2-quote",
+      "tenant_id": 2,
+      "query": "折扣超过10%需要谁审批",
+      "roles": [
+        "sales"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 2,
+          "document_id": "crm-0016",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t2-contract",
+      "tenant_id": 2,
+      "query": "签署后两个工作日内合同归档",
+      "roles": [
+        "sales"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 2,
+          "document_id": "crm-0018",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t2-customer",
+      "tenant_id": 2,
+      "query": "年度采购额50万元重点客户",
+      "roles": [
+        "sales"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 2,
+          "document_id": "crm-0017",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t2-leave",
+      "tenant_id": 2,
+      "query": "休假直属负责人审核",
+      "roles": [
+        "hr"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 2,
+          "document_id": "hcm-0022",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t2-job",
+      "tenant_id": 2,
+      "query": "岗位变更系统访问角色",
+      "roles": [
+        "hr"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 2,
+          "document_id": "hcm-0025",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t2-stock",
+      "tenant_id": 2,
+      "query": "库存安全线20件补货",
+      "roles": [
+        "procurement"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 2,
+          "document_id": "scm-0026",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t2-arrival",
+      "tenant_id": 2,
+      "query": "仓库核对数量外观",
+      "roles": [
+        "procurement"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 2,
+          "document_id": "scm-0028",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t2-purchase",
+      "tenant_id": 2,
+      "query": "采购金额3万元主管审批",
+      "roles": [
+        "procurement"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": [
+        {
+          "tenant_id": 2,
+          "document_id": "scm-0029",
+          "version": 1
+        }
+      ]
+    },
+    {
+      "id": "t2-wrong-role",
+      "tenant_id": 2,
+      "query": "报价折扣审批",
+      "roles": [
+        "employee"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": []
+    },
+    {
+      "id": "t2-not-effective",
+      "tenant_id": 2,
+      "query": "报价审批",
+      "roles": [
+        "sales"
+      ],
+      "as_of": "2025-12-31",
+      "expected_documents": []
+    },
+    {
+      "id": "t2-absent",
+      "tenant_id": 2,
+      "query": "ZXQ987",
+      "roles": [
+        "sales"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": []
+    },
+    {
+      "id": "t2-other-tenant",
+      "tenant_id": 2,
+      "query": "只查租户1的crm-0001报价审批制度",
+      "roles": [
+        "sales"
+      ],
+      "as_of": "2026-10-21",
+      "expected_documents": []
+    }
+  ]
+}
