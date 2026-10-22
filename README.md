@@ -2,7 +2,7 @@
 
 面向具备 Python 编程、Linux 与 Hadoop 基础的学习者，用同一家虚构企业贯穿数据工程、Qwen 微调、企业知识库、LangGraph 1.x 应用开发和 FDE 项目交付。
 
-**当前课程批次：0.1.4.0，当前分支已提供 M01–M07 代码与教程。发布状态以 GitHub PR 为准，Ubuntu 服务器验收待执行。** 已提供数据库配置、14 张业务表、两租户合成数据、文件事件治理、Ollama评估工具、480条微调样本及单卡 Qwen 训练准备与检查工具、同底座评估/CPU 导出护栏及本机 API 探针；未运行真实模型或完成 Ubuntu 集成验证。
+**当前课程批次：0.1.5.0，当前分支提供 M01–M08 代码与教程。发布状态以 GitHub PR 为准，Ubuntu 服务器验收待执行。** 已提供数据库配置、14 张业务表、两租户合成数据、文件事件治理、Ollama评估工具、480条微调样本及单卡 Qwen 训练准备与检查工具、同底座评估/CPU 导出护栏、本机 API 探针和文档解析/版本/权限流水线；未运行真实模型或完成 Ubuntu 集成验证。
 
 ## 工作方式
 
@@ -27,7 +27,9 @@
 
 10. 阅读 [第 7 课：评估、导出与模型服务](docs/tutorials/07-evaluation-serving.md)，完成同精度对照、导出回归和本机服务探针；填写 [M07 交付记录](docs/runbooks/m07-model-delivery.md)。
 
-第 0–7 课已撰写。M04–M05 已在 [PR #3](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/3) 合并；M06 是否已进入 main，请查看对应 PR 和代码文件，不能仅凭 VERSION 判断。M07 位于开发分支，合并状态以 PR 为准。M08–M13 尚待补齐。文件用途见 [Filelist.txt](Filelist.txt)，M07 进度见 [执行记录](docs/progress/2026-10-20-m07-execution.md)。
+11. 阅读 [第8课：企业文档工程](docs/tutorials/08-document-engineering.md)，生成三格式合成文档，验证切块、更新、撤权和删除；不需要GPU或数据库服务。
+
+第 0–8 课已撰写。M04–M05 已在 [PR #3](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/3) 合并；M06 [PR #4](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/4)、M07 [PR #5](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/5) 与 M08 [PR #6](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/6) 的合并状态以 GitHub PR 为准，不能仅凭 VERSION 判断。M09–M13 尚待补齐。文件用途见 [Filelist.txt](Filelist.txt)，M08进度见 [执行记录](docs/progress/2026-10-21-m08-execution.md)。
 
 ## 本批文件导航
 
@@ -105,3 +107,12 @@ python -m enterprise_ai.db verify data/generated/tiny.json
 | [评估与比较](src/enterprise_ai/model_eval.py) | 完整题集记录、指标重算、同精度实验比较 |
 | [API 探针](src/enterprise_ai/model_api.py) | 本机鉴权、模型别名与单题响应契约检查 |
 | [M07 验证记录](docs/validation/2026-10-20-m07.md) | 离线测试、审核与服务器待验收边界 |
+
+## M08 文件导航
+
+| 文件 | 用途 |
+| --- | --- |
+| [文档生成器](src/enterprise_ai/document_samples.py) / [数据卡](docs/data-cards/m08-documents.md) | 两租户、三个领域、30/300/1000篇可重复合成源文档 |
+| [格式解析](src/enterprise_ai/document_parse.py) / [版本流水线](src/enterprise_ai/document_pipeline.py) | Markdown/PDF/DOCX、带定位切块、批次事务、可信身份导出 |
+| [增量演示](src/enterprise_ai/document_demo.py) | 独立目录验证幂等、权限变更、删除和失败回滚 |
+| [交接模板](docs/runbooks/m08-document-handoff.md) / [验证记录](docs/validation/2026-10-21-m08.md) | 人工抽样、M09交接与未验证事项 |

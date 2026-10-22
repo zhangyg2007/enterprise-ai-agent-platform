@@ -1,6 +1,6 @@
 # 课程路线与模块交付计划
 
-创建日期：2026-10-15；更新日期：2026-10-20。状态：当前开发分支提供 M01–M07 代码与教程；M04–M05 已合并，M06/M07 合并状态以 GitHub PR 为准。Ubuntu 服务器验收待执行。M08–M13 仍为计划，不视为已交付。
+创建日期：2026-10-15；更新日期：2026-10-21。状态：当前开发分支提供 M01–M08 代码与教程；M04–M05 已合并，M06/M07/M08 合并状态以 GitHub PR 为准。Ubuntu 服务器验收待执行。M09–M13 仍为计划，不视为已交付。
 
 ## 1. 学习目标和主线选择
 
@@ -48,6 +48,8 @@ M04 提供回环地址 Ollama 客户端、16 题公开开发集、严格 JSON/�
 M05 提供480条规则标注的合成请求，按关联实体组切分为336/96/48，导出Alpaca/ShareGPT及固定验证集注册，保护M04题集并检查模板/文本交叉。参见[第5课](tutorials/05-finetune-data.md)、[数据卡](data-cards/m05-intents.md)及[验证记录](validation/2026-10-17-m05.md)。这些数据用于学习流程，不能作为真实企业泛化证据；LLaMA-Factory与tokenizer实测在M06。
 
 ## 3. 依赖与里程碑
+
+M08提供30/300/1000篇两租户合成文档、Markdown/PDF/DOCX解析、可追溯字符切块、SQLite版本/墓碑事务与租户/角色/有效期导出。参见[第8课](tutorials/08-document-engineering.md)、[数据卡](data-cards/m08-documents.md)和[验证记录](validation/2026-10-21-m08.md)。实际三格式文件在已有运行库回读；DOCX版面、Ubuntu安装及生产文档仍待验收。本章不含embedding/检索或生产认证。
 
 M06 提供固定版本 Qwen3-4B-Instruct-2507 的 QLoRA 候选配置、训练快照准备器、服务器环境小探针和 tokenizer 长度检查。参见[第6课](tutorials/06-qwen-finetuning.md)、[跨会话手册](runbooks/m06-server-handoff.md)及[验证记录](validation/2026-10-19-m06.md)。本地文件和模拟测试不能代替真实数据加载、WebUI、GPU 训练与质量评估；安装测试在独立会话进行。
 
