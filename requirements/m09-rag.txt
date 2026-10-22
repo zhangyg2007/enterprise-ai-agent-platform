@@ -1,0 +1,5 @@
+# Separate Ubuntu environment; actual model/driver compatibility still needs validation.
+torch==2.8.0
+transformers==4.57.1
+sentencepiece==0.2.1
+psycopg[binary]==3.2.10
