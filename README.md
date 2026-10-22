@@ -2,7 +2,7 @@
 
 面向具备 Python 编程、Linux 与 Hadoop 基础的学习者，用同一家虚构企业贯穿数据工程、Qwen 微调、企业知识库、LangGraph 1.x 应用开发和 FDE 项目交付。
 
-**当前课程批次：0.1.3.0，已提供 M01–M06 代码与教程。发布状态以 GitHub PR 为准，Ubuntu 服务器验收待执行。** 已提供数据库配置、14 张业务表、两租户合成数据、文件事件治理、Ollama评估工具、480条微调样本及单卡 Qwen 训练准备与检查工具；未运行真实模型或完成 Ubuntu 集成验证。
+**当前课程批次：0.1.4.0，当前分支已提供 M01–M07 代码与教程。发布状态以 GitHub PR 为准，Ubuntu 服务器验收待执行。** 已提供数据库配置、14 张业务表、两租户合成数据、文件事件治理、Ollama评估工具、480条微调样本及单卡 Qwen 训练准备与检查工具、同底座评估/CPU 导出护栏及本机 API 探针；未运行真实模型或完成 Ubuntu 集成验证。
 
 ## 工作方式
 
@@ -25,7 +25,9 @@
 
 9. 取得包含 M06 的代码后，按 [第 6 课：Qwen 单卡微调](docs/tutorials/06-qwen-finetuning.md) 准备独立训练环境、固定模型与数据快照，先做小规模试跑，再训练正式 adapter。安装与实测问题可使用[跨会话交接手册](docs/runbooks/m06-server-handoff.md)。
 
-第 0–6 课已撰写。M04–M05 已在 [PR #3](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/3) 合并；M06 是否已进入 main，请查看对应 PR 和代码文件，不能仅凭 VERSION 判断。M07–M13 随后续模块补齐，当前不提供这些模块的运行入口。
+10. 阅读 [第 7 课：评估、导出与模型服务](docs/tutorials/07-evaluation-serving.md)，完成同精度对照、导出回归和本机服务探针；填写 [M07 交付记录](docs/runbooks/m07-model-delivery.md)。
+
+第 0–7 课已撰写。M04–M05 已在 [PR #3](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/3) 合并；M06 是否已进入 main，请查看对应 PR 和代码文件，不能仅凭 VERSION 判断。M07 位于开发分支，合并状态以 PR 为准。M08–M13 尚待补齐。文件用途见 [Filelist.txt](Filelist.txt)，M07 进度见 [执行记录](docs/progress/2026-10-20-m07-execution.md)。
 
 ## 本批文件导航
 
@@ -94,3 +96,12 @@ python -m enterprise_ai.db verify data/generated/tiny.json
 - 测试未执行标注“未执行”；计划中的指标标注“目标”；不以模拟测试替代模型实测。
 - 模型权重、训练输出、数据库卷、真实业务数据与凭证不进入 Git。
 - 当前检查结果见 [M01–M02 验证记录](docs/validation/2026-10-15-m01-m02.md)；设计阶段的历史记录见 [首批文档验证记录](docs/validation/2026-10-15-planning-review.md)。
+
+## M07 文件导航
+
+| 文件 | 用途 |
+| --- | --- |
+| [交付准备与导出](src/enterprise_ai/model_delivery.py) | 固定来源、资产指纹、推理配置、新目录 CPU 导出 |
+| [评估与比较](src/enterprise_ai/model_eval.py) | 完整题集记录、指标重算、同精度实验比较 |
+| [API 探针](src/enterprise_ai/model_api.py) | 本机鉴权、模型别名与单题响应契约检查 |
+| [M07 验证记录](docs/validation/2026-10-20-m07.md) | 离线测试、审核与服务器待验收边界 |
