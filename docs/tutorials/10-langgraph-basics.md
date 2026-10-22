@@ -2,24 +2,17 @@
 
 本课目标：用真实`StateGraph`理解state、node、edge、条件路由、有限重试和节点更新流。模型只提出一个受检计划，确定性代码校验参数、身份、预算并执行只读工具，最后展示实际数据或引用。它是单次规划的工作流入门；多步业务、人审、持久化与写入在M11，生产认证在M12。
 
-执行位置：Ubuntu、包含本章文件的仓库根目录。M09稳定学习分支不因本章开发而改变；本章分支为`codex/m10-langgraph-basics`。先按[起步手册](../runbooks/server-start.md)检查并保留本地修改；工作区干净且准备学习本章时，再取得M10分支：
+执行位置：Ubuntu、main分支的仓库根目录。第0–10课已合并main，先按[起步手册](../runbooks/server-start.md)取得或更新main，保留本地修改和实验数据；不用再切换章节开发分支。
 
 ```bash
-git remote set-branches --add origin codex/m10-langgraph-basics
-git fetch origin \
-  refs/heads/codex/m10-langgraph-basics:refs/remotes/origin/codex/m10-langgraph-basics
-if git show-ref --verify --quiet refs/heads/codex/m10-langgraph-basics; then
-  git switch codex/m10-langgraph-basics
-else
-  git switch --track origin/codex/m10-langgraph-basics
-fi
-git merge --ff-only origin/codex/m10-langgraph-basics
+git branch --show-current
 git rev-parse HEAD
 cat VERSION
 test -f src/enterprise_ai/agent_cli.py
+test -f requirements/m10-agent.txt
 ```
 
-预期本章批次0.1.7.0，不使用M09起步手册里的0.1.6.0版本断言；不快进或有覆盖冲突就停止，不重置仓库。
+预期分支main、课程批次0.1.7.0、文件检查成功。历史分支codex/m10-langgraph-basics保留用于复现；新学习使用main。不快进或有覆盖冲突时按起步手册停止并保留状态，不重置仓库。
 
 ## 1. 业务问题与图
 

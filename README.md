@@ -2,7 +2,7 @@
 
 面向具备 Python 编程、Linux 与 Hadoop 基础的学习者，用同一家虚构企业贯穿数据工程、Qwen 微调、企业知识库、LangGraph 1.x 应用开发和 FDE 项目交付。
 
-**当前课程批次：0.1.7.0，当前开发分支提供 M01–M10 代码与教程。发布状态以 GitHub PR 为准，Ubuntu 服务器验收待执行。** 已提供数据库配置、14 张业务表、两租户合成数据、文件事件治理、Ollama评估工具、480条微调样本及单卡 Qwen 训练准备与检查工具、同底座评估/CPU 导出护栏、本机 API 探针和文档解析/版本/权限流水线、M09检索/引用/评估及pgvector适配；未运行真实模型或完成 Ubuntu 集成验证。
+**当前课程批次：0.1.7.0，main 已提供第0–10课及 M01–M10 代码；M06–M10 的 PR #4–#8 已合并。Ubuntu 服务器验收待执行。** 已提供数据库配置、14 张业务表、两租户合成数据、文件事件治理、Ollama评估工具、480条微调样本及单卡 Qwen 训练准备与检查工具、同底座评估/CPU 导出护栏、本机 API 探针和文档解析/版本/权限流水线、M09检索/引用/评估及pgvector适配；未运行真实模型或完成 Ubuntu 集成验证。
 
 ## 工作方式
 
@@ -12,11 +12,11 @@
 - 已有模型：Ollama 中的 `qwen3.8:27b`，按用户提供的名称记录，模型实际架构、量化格式和来源尚待检查。
 - 目标仓库：https://github.com/zhangyg2007/enterprise-ai-agent-platform 。当前为公开仓库，仅提供合成教学数据。
 
-本轮服务器实操请先读[获取版本与起步说明](docs/runbooks/server-start.md)，使用`codex/m09-enterprise-rag`分支取得完整第0–9课。总体范围与待办见[plan.txt](plan.txt)。
+本轮服务器实操请先读[获取版本与起步说明](docs/runbooks/server-start.md)，使用`main`取得完整第0–10课。总体范围与待办见[plan.txt](plan.txt)。
 
-M10开发分支新增[第10课](docs/tutorials/10-langgraph-basics.md)：真实StateGraph、受控只读工具、有限重试与节点流；[服务器验收表](docs/runbooks/m10-agent-handoff.md)与[本地验证](docs/validation/2026-10-22-m10.md)分开记录。M09学习分支仍保持第0–9课稳定快照。
+M10已提供[第10课](docs/tutorials/10-langgraph-basics.md)：真实StateGraph、受控只读工具、有限重试与节点流；[服务器验收表](docs/runbooks/m10-agent-handoff.md)与[本地验证](docs/validation/2026-10-22-m10.md)分开记录。历史章节分支保留用于复现；常规学习统一从main开始。
 
-GitHub默认main只见第0–5课的原因、M06–M10远端分支与待合并PR链见[发布排查记录](docs/progress/2026-10-22-github-publication-audit.md)。分支同步与合并main分开记录，合并确认待答复。
+M06–M10已合并main，曾经默认页缺失的原因见[历史排查记录](docs/progress/2026-10-22-github-publication-audit.md)，最终状态见[主线发布记录](docs/progress/2026-10-22-main-publication.md)。M11仍在独立开发分支。
 
 M11开发先提供[T1业务事务基础实验](docs/runbooks/m11-t1-business-ledger.md)：合成SQLite报价、休假、补货的审批、幂等、版本冲突和原子回滚。[本地验证](docs/validation/2026-10-22-m11-t1.md)与[后续计划](docs/superpowers/plans/2026-10-22-m11-enterprise-workflows.md)可追踪；持久图和正式PostgreSQL仍待实施，尚未交付完整第11课。
 
@@ -37,7 +37,11 @@ M11开发先提供[T1业务事务基础实验](docs/runbooks/m11-t1-business-led
 
 11. 阅读 [第8课：企业文档工程](docs/tutorials/08-document-engineering.md)，生成三格式合成文档，验证切块、更新、撤权和删除；不需要GPU或数据库服务。
 
-第 0–10 课已撰写。M04–M05 已在 [PR #3](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/3) 合并；M06 [PR #4](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/4)、M07 [PR #5](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/5) 与 M08 [PR #6](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/6) 的合并状态以 GitHub PR 为准，不能仅凭 VERSION 判断。M09新增[第9课：企业RAG](docs/tutorials/09-enterprise-rag.md)、[服务器验收手册](docs/runbooks/m09-rag-handoff.md)与[本地验证记录](docs/validation/2026-10-22-m09.md)。M09当前在本轮学习分支，真实模型/数据库与Ubuntu验收待执行；M11–M13尚待补齐。文件用途见 [Filelist.txt](Filelist.txt)，M08进度见 [执行记录](docs/progress/2026-10-21-m08-execution.md)。
+12. 阅读[第9课：企业RAG](docs/tutorials/09-enterprise-rag.md)，先做无模型下载的离线实验，再按[验收表](docs/runbooks/m09-rag-handoff.md)连接真实BGE和数据库。
+
+13. 阅读[第10课：LangGraph基础](docs/tutorials/10-langgraph-basics.md)，先验证受控只读工具和失败路径，再连接真实模型、数据库与知识索引。
+
+第0–10课均已进入main，课程批次0.1.7.0；发布合并与本地验证见[主线发布记录](docs/progress/2026-10-22-main-publication.md)。M11的基础事务实验另在[草稿PR #9](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/9)，持久图、正式PostgreSQL及完整第11课尚待补齐；M12–M13继续按总计划实施。main发布不代表真实模型、训练或Ubuntu验收完成。文件用途见[Filelist.txt](Filelist.txt)。
 
 ## 本批文件导航
 
