@@ -143,3 +143,5 @@ M09本批最终本地候选：217项全量通过；独立review无Critical/Impor
 本批按codex/m09-enterprise-rag同步，不合并main，不更改服务器；本地环境记忆仍被忽略。Git连接失败时通过GitHub API上传同一commit/tree，必须回读确认。
 
 同步门禁：217项新全量通过（84.337秒），独立审阅发现的旧single-branch更新问题已复现并修复，临时Git仓库验证通过；49个Shell块及101链接检查通过。
+
+GitHub已回读核对9515799：完整M09课程提交与远端tree一致。document-release独立审计后同步README/ROADMAP/plan当前状态；真实服务器仍待验收。
