@@ -117,6 +117,12 @@ class WorkflowLab:
 
     @contextmanager
     def _graph(self, actor, row, *, fail_after_effect=False):
+        with closing(_connect(self.checkpoint)) as db:
+            saver = SqliteSaver(db, serde=_serde())
+            saver.jsonplus_serde = _serde()
+            yield self._compile_graph(actor, row, saver, fail_after_effect=fail_after_effect)
+
+    def _compile_graph(self, actor, row, saver, *, fail_after_effect=False):
         request_id = row['request_id']
 
         def prepare(state):
@@ -150,10 +156,7 @@ class WorkflowLab:
         builder.add_conditional_edges('review', lambda s: 'execute' if s['status'] == 'approved' else END,
                                       ['execute', END])
         builder.add_edge('execute', END)
-        with closing(_connect(self.checkpoint)) as db:
-            saver = SqliteSaver(db, serde=_serde())
-            saver.jsonplus_serde = _serde()
-            yield builder.compile(checkpointer=saver)
+        return builder.compile(checkpointer=saver)
 
     @staticmethod
     def _config(row):

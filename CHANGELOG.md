@@ -4,6 +4,8 @@
 
 ## 未发布 - M11 T1/T2开发基础
 
+- 2026-10-24 T3候选：独立PostgreSQL账本、session_user映射/RLS/ACL、真实PostgresSaver3.2.0、只读M02冻结快照、私密service凭证生成及第11课/服务器验收脚本。真实PG与Ubuntu验收待执行；不把离线连接替身当数据库通过。
+
 - 新增独立合成SQLite业务账本，报价/休假/补货需独立manager批准；严格参数、租户/owner隔离、资源版本冲突、事务回滚与持久幂等回执。
 - T1检查点：新增10项定向测试及可执行手算实验，当时完整237项回归通过；不是下述T2本批的最终测试数。
 - 2026-10-23 T2：真实SqliteSaver/interrupt/Command暂停与新进程恢复，图外thread/tenant/owner授权、lab级OS锁、批准前无业务效果、不可反转决定与业务回执恢复。

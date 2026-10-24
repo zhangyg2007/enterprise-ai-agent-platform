@@ -1,6 +1,6 @@
 # 课程路线与模块交付计划
 
-创建日期：2026-10-15；更新日期：2026-10-24。状态：main提供第0–10课及M01–M10代码，PR #4–#8已合并，课程批次0.1.7.0。Ubuntu服务器验收待执行。M11的T1合成事务、T2真实持久化审批/恢复在草稿PR #9，修订后257项回归与独立环境30项通过，正式PostgreSQL与整章尚待交付；M12–M13仍为计划。
+创建日期：2026-10-15；更新日期：2026-10-24。状态：main提供第0–10课及M01–M10代码，PR #4–#8已合并，课程批次0.1.7.0。M11草稿PR #9新增第11课与T3独立PostgreSQL适配/检查点/只读快照，本地验证与真实服务器验收分开，后者待执行；M12–M13仍为计划。
 
 ## 1. 学习目标和主线选择
 
@@ -97,3 +97,5 @@ M06 提供固定版本 Qwen3-4B-Instruct-2507 的 QLoRA 候选配置、训练快
 M09本地新增完整head索引包、权限/日期检索、关键词/向量/RRF与可选重排、pgvector适配、24题公开开发集及六项增量实验。见[第9课](tutorials/09-enterprise-rag.md)、[数据卡](data-cards/m09-retrieval.md)、[服务器手册](runbooks/m09-rag-handoff.md)和[验证记录](validation/2026-10-22-m09.md)。fixture只验证流程；真实BGE、数据库迁移/RLS/HNSW与Ubuntu安装仍待执行。
 
 M10提供真实StateGraph的单次规划/只读工具/条件边/重试/节点updates，见[第10课](tutorials/10-langgraph-basics.md)和[验收表](runbooks/m10-agent-handoff.md)。模型只能提议严格参数，确定性工具读取DB或M09证据；本章不包含业务写入、checkpoint持久化或生产认证。
+
+M11开发候选见[第11课](tutorials/11-enterprise-workflows.md)、[PostgreSQL实操验收](runbooks/m11-postgres-handoff.md)与[本地证据](validation/2026-10-24-m11-t3.md)。M02只读快照与派生账本分离，持久图不替代业务幂等；PG迁移/RLS/检查点实际运行须在服务器逐项验收。

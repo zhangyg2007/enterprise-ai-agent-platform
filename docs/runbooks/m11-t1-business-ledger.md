@@ -61,4 +61,4 @@ PY
 
 同租户、同owner、同幂等键与同规范化输入返回原请求；修改输入或换owner复用键会拒绝。执行后的重试先检查身份，再返回原回执，不再次扣减。数据库文件由本地实验者掌管，本实验不防御管理员直接篡改SQLite文件。
 
-记录Python版本、代码commit、10项测试输出与实验输出。当前尚未实现图中断/跨进程恢复、PostgreSQL业务适配、Web身份认证；它们分别属于T2、T3和M12。进度见[执行记录](../progress/2026-10-22-m11-execution.md)，文件导航见[Filelist](../../Filelist.txt)。
+记录Python版本、代码commit、10项测试输出与实验输出。本实验只覆盖T1；后续实操已有[T2图中断/跨进程恢复](m11-t2-persistent-approval.md)与[T3 PostgreSQL本地候选](m11-postgres-handoff.md)，真实PG/Ubuntu待服务器验收，Web身份认证属于M12。进度见[执行记录](../progress/2026-10-22-m11-execution.md)，文件导航见[Filelist](../../Filelist.txt)。

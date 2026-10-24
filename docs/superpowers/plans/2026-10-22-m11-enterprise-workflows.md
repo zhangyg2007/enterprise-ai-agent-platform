@@ -37,6 +37,8 @@ Files: workflow_graph.py, workflow_cli.py, tests; fixed sqlite saver requirement
 ### T3: Formal server path and chapter delivery
 
 Files: PostgreSQL adapter/migration and checkpointer setup, contract/integration tests, tutorial11/runbook/validation, README/ROADMAP/plan/Filelist.
-- [ ] Explicit new schema/roles, session-auth mapping, transaction/receipt invariants and safe migration instructions; no unapproved live mutation.
-- [ ] Actual local framework tests, SQL contracts, full regression/static checks and independent review; Ubuntu PG checks explicitly pending.
-- [ ] Only then mark complete local M11 course, sync requested branch/PR; main merge requires explicit user approval.
+- [x] Explicit new schema/roles, session-auth mapping, transaction/receipt invariants and safe migration instructions; no live mutation executed.
+- [x] Actual local framework tests, SQL contracts, full277 regression/static checks and independent review; diagnostic finding fixed with RED→GREEN. Ubuntu PG integration checks explicitly pending.
+- [x] Local M11 candidate course/tutorial and server acceptance path prepared for requested PR #9 synchronization; not a PG acceptance claim. Main merge still requires explicit user approval.
+
+T3 execution detail (2026-10-24): decisions and current evidence in ../../progress/2026-10-24-m11-t3-execution.md. Reuse the approved T1 business contract in a fixed-SQL PostgreSQL transaction adapter; DB login maps the actor, tenant advisory locks serialize ledger transitions, and a dedicated PostgresSaver/schema handles graph state. Separate new database, migration-only administrator and runtime accounts; M02 reader snapshot export has no writes. Add workflow_pg.py/workflow_pg_cli.py/workflow_snapshot.py, 030-m11-workflows.sql, requirements/m11-postgres.txt and offline contracts plus explicit server integration command. Delivery includes tutorial11 and a server acceptance runbook; no production/Ubuntu claim without actual evidence.

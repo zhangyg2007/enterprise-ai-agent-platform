@@ -225,3 +225,23 @@ M11 T2开发文件（2026-10-24本地验证与独立review完成，更新草稿P
 | `docs/validation/2026-10-23-m11-t2.md` | 20项T2及257项完整门禁证据/限制 | 保留失败与串行复验，不冒充T3或Ubuntu通过 |
 
 T2最终verification：257项完整回归通过（102.432秒，无skip，含20项T2）；全新venv安装/pip check及30项T1/T2通过（31.409秒）；修订后教材六段实际独立进程命令通过。静态59Python/67Shell/8示例/133链接/3配置与10核心pin检查通过。此前并行复测MemoryError失败记录保留，改为相同代码串行复验。独立review确认两处修复，无Critical/Important/可行动Minor。T2本地阶段完成；T3及整章仍待交付，主线未合并M11。
+
+2026-10-24 T3接续：`docs/progress/2026-10-24-m11-t3-execution.md`记录独立PostgreSQL库/身份/检查点/只读快照裁定与验证进度；原M11计划同步细化。当前尚未完成T3，不覆盖上方T2验证。
+
+| T3新增文件 | 用途 | 使用方式 |
+| -- | -- | -- |
+| `src/enterprise_ai/workflow_pg.py` | PG事务适配、登录身份、registry、锁与真实PostgresSaver | 独立新工作流数据库，运行期无DDL |
+| `src/enterprise_ai/workflow_pg_cli.py` | 私密service生成、setup/seed/导出/审批与恢复 | `python -m enterprise_ai.workflow_pg_cli --help` |
+| `src/enterprise_ai/workflow_snapshot.py` | M02只读一致快照与严格冻结输入 | 不回写CRM/HCM/SCM |
+| `infra/postgres/migrations/029-m11-roles.sql` | 新工作流角色，密码独立生成 | 集群管理员一次性审阅执行 |
+| `infra/postgres/migrations/030-m11-workflows.sql` | 新库三schema、映射、账本及RLS/ACL | 仅m11_migrator在独立库执行 |
+| `requirements/m11-postgres.txt` | PostgresSaver3.2.0配套依赖 | 单独M11应用环境 |
+| `scripts/m11_verify_pg.py` | 真实PG三案例/恢复/权限/并发与回滚验收 | 新demo库显式执行；本地未运行 |
+| `tests/test_workflow_pg.py` | PG身份、SQL、事务与真实框架配置契约 | transport替身，不代替PG集成 |
+| `tests/test_workflow_snapshot.py` | 价格/天数/库存严格输入与只读查询 | 本地单元测试 |
+| `tests/test_workflow_pg_cli.py` | CLI身份拒绝、私密文件与禁止覆盖 | 本地执行，不连服务器 |
+| `docs/tutorials/11-enterprise-workflows.md` | 三案例、审批/幂等/恢复原理与练习 | 先T1/T2，再服务器路径 |
+| `docs/runbooks/m11-postgres-handoff.md` | 独立建库、角色、快照与实际验收命令 | 服务器执行并填表 |
+| `docs/validation/2026-10-24-m11-t3.md` | 本地证据与未执行边界 | 避免把离线测试当PG通过 |
+
+共用`workflow_graph.py`仅提取图编译方法，节点与T2契约保留。T3最终277项完整回归通过（112.228秒，无skip，含20项T3），独立M11环境50项通过（32.072秒）；静态65Python/74Shell/9示例/152链接/3配置、SQL解析与固定依赖检查通过。独立review无Critical/Important；排错日志问题已补RED→GREEN，提供可选私有诊断文件。最初MemoryError/缺格式库skip的失败记录保留。T3本地候选已完成，真实PG/Ubuntu未验证，服务器表全部待填。

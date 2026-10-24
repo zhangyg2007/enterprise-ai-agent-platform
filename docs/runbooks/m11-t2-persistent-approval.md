@@ -1,6 +1,6 @@
 # M11第二步：持久化审批、进程重启与幂等恢复（T2）
 
-本实验接续[T1事务账本](m11-t1-business-ledger.md)，使用真实StateGraph、SqliteSaver、interrupt和Command，验证三个案例暂停后可以在新进程恢复。所有数据和Actor均为合成教学输入；不调用模型、GPU或M02数据库。T3正式PostgreSQL及完整第11课仍待交付，本实验不是生产认证或服务器数据库验收。
+本实验接续[T1事务账本](m11-t1-business-ledger.md)，使用真实StateGraph、SqliteSaver、interrupt和Command，验证三个案例暂停后可以在新进程恢复。所有数据和Actor均为合成教学输入；不调用模型、GPU或M02数据库。后续已有[T3 PostgreSQL候选与服务器验收](m11-postgres-handoff.md)，本实验本身不证明生产认证或服务器数据库通过。
 
 ## 1. 获取本批开发文件
 
@@ -170,4 +170,4 @@ business.sqlite、control.sqlite、checkpoints.sqlite除类型外还绑定同一
 3. 用employee批准自己的线程、用tenant2查询tenant1线程，确认退出码3且没有效果增加。
 4. 解释为什么正常retry的replayed可能false，而故障后execute重跑应true。
 
-官方资料：[interrupt与恢复](https://docs.langchain.com/oss/python/langgraph/interrupts)、[持久化与checkpointer](https://docs.langchain.com/oss/python/langgraph/persistence)、[SQLite saver固定版本](https://pypi.org/project/langgraph-checkpoint-sqlite/3.1.2/)。本教程按固定1.2.16 API实现，不要求照抄官方后续新API示例。下一阶段T3正式PostgreSQL，完整第11课未发布。
+官方资料：[interrupt与恢复](https://docs.langchain.com/oss/python/langgraph/interrupts)、[持久化与checkpointer](https://docs.langchain.com/oss/python/langgraph/persistence)、[SQLite saver固定版本](https://pypi.org/project/langgraph-checkpoint-sqlite/3.1.2/)。本教程按固定1.2.16 API实现，不要求照抄官方后续新API示例。完整脉络见[第11课候选](../tutorials/11-enterprise-workflows.md)，当前仍在开发分支，未合并main。
