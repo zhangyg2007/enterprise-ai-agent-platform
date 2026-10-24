@@ -16,6 +16,10 @@
 
 M10已提供[第10课](docs/tutorials/10-langgraph-basics.md)：真实StateGraph、受控只读工具、有限重试与节点流；[服务器验收表](docs/runbooks/m10-agent-handoff.md)与[本地验证](docs/validation/2026-10-22-m10.md)分开记录。历史章节分支保留用于复现；常规学习统一从main开始。
 
+M06–M10已合并main，曾经默认页缺失的原因见[历史排查记录](docs/progress/2026-10-22-github-publication-audit.md)，最终状态见[主线发布记录](docs/progress/2026-10-22-main-publication.md)。M11仍在独立开发分支。
+
+M11开发分支新增[第11课](docs/tutorials/11-enterprise-workflows.md)：[T1事务基础](docs/runbooks/m11-t1-business-ledger.md)、[T2持久化审批/恢复](docs/runbooks/m11-t2-persistent-approval.md)和[PostgreSQL实操](docs/runbooks/m11-postgres-handoff.md)。报价、休假、补货经真实LangGraph暂停后，在独立进程批准、拒绝或恢复，业务回执防止重复执行。T3提供独立PG账本/身份/检查点与M02只读快照；[本地验证](docs/validation/2026-10-24-m11-t3.md)和服务器验收明确分开。本批更新草稿PR #9，不表示已合并main或真实PostgreSQL验收通过。
+
 ## 从这里开始
 
 1. 阅读 [课程路线与模块交付计划](docs/ROADMAP.md)。
@@ -37,7 +41,9 @@ M10已提供[第10课](docs/tutorials/10-langgraph-basics.md)：真实StateGraph
 
 13. 阅读[第10课：LangGraph基础](docs/tutorials/10-langgraph-basics.md)，先验证受控只读工具和失败路径，再连接真实模型、数据库与知识索引。
 
-第0–10课均已进入main，课程批次0.1.7.0；发布合并与本地验证见[主线发布记录](docs/progress/2026-10-22-main-publication.md)。M11的基础事务实验另在[草稿PR #9](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/9)，持久图、正式PostgreSQL及完整第11课尚待补齐；M12–M13继续按总计划实施。main发布不代表真实模型、训练或Ubuntu验收完成。文件用途见[Filelist.txt](Filelist.txt)。
+14. M11开发实操阅读[第11课](docs/tutorials/11-enterprise-workflows.md)，先跑可手算的T1/T2，再在独立PostgreSQL库完成服务器验收。
+
+第0–10课均已进入main，课程批次0.1.7.0；发布合并与本地验证见[主线发布记录](docs/progress/2026-10-22-main-publication.md)。M11本地候选在[草稿PR #9](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/9)，真实PostgreSQL与Ubuntu待验收；M12–M13继续按总计划实施。文件用途见[Filelist.txt](Filelist.txt)。
 
 ## 本批文件导航
 
