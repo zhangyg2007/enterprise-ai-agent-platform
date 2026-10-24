@@ -19,3 +19,9 @@ T3：提供PostgreSQL checkpointer（固定版本、setup一次）和最小业�
 架构调用由builder确定具体文件/接口；不新增真实模型训练、部署或生产认证范围。T1可先交付基础验收记录，剩余T2/T3显式保留待办，不虚构整章完成。
 
 Builder check ruling（T1）：报价执行仅保存报价单/effect及唯一回执，不修改价格或库存revision；相同价格revision可生成多份不同合法报价。“同revision仅一笔成功”只约束休假余额和补货在途等实际变化资源。报价仍重查价格snapshot，且相同幂等键只生成一次。金额按两位小数ROUND_HALF_UP，discount_percent仅0..30的十进制字符串；教学所有三种写入均需manager人审。
+
+T2 builder裁定（2026-10-23）：lab固定business/control/checkpoints三个SQLite文件及operation.lock；控制库绑定thread/tenant/owner/规范化输入，checkpoint实际ID由tenant:thread构成。为降低教学并发复杂度，OS锁串行化整个lab，涵盖同thread及不同thread并在进程退出时释放；不是分布式调度。Actor不从checkpoint读取，start不覆盖已存在的图。审批已提交、图保存失败时，用账本中已有决定恢复；未批准的pending仍不能retry越过人审。独立M11依赖环境使用新的固定框架组合，不覆盖M10复现环境；序列化不启用pickle或任意应用类型。
+
+T2术语澄清：批准前可写草案、registry和checkpoint等元数据；“不做业务写入”指不扣减余额、不产生采购/正式报价effect，并非禁止记录待审批请求。
+
+T2 review修订：已持久化批准/拒绝时，相反CLI动作必须在调用图之前报错，不能依赖LangGraph选择新旧resume值。三个数据库共用lab UUID/格式版本以发现误混用；此标识不是签名，不抵御可信文件管理员篡改。尚未公开发布的旧开发库没有标识时拒绝打开，保留旧证据另建新lab，不自动迁移或清空。

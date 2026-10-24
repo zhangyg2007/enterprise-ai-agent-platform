@@ -31,8 +31,8 @@ Files: workflow_store.py, test_workflow_store.py; T1 lab/runbook evidence and Fi
 ### T2: Genuine persisted LangGraph approval
 
 Files: workflow_graph.py, workflow_cli.py, tests; fixed sqlite saver requirements.
-- [ ] RED pause/reopen/resume, owner guard before checkpoint, reject no effect, post-effect crash/retry single receipt, per-thread concurrency guard.
-- [ ] GREEN actual SqliteSaver/interrupt/Command CLI process restart evidence, not in-memory substitute.
+- [x] RED pause/reopen/resume, owner guard before checkpoint, reject no effect, post-effect crash/retry single receipt, concurrency guard (lab-level OS serialization by documented ruling).
+- [x] GREEN actual SqliteSaver/interrupt/Command CLI process restart; immutable decision and lab-file binding regressions; full257/clean30 passed, exact guide commands passed, independent review no actionable findings. T3/whole chapter remain pending.
 
 ### T3: Formal server path and chapter delivery
 
