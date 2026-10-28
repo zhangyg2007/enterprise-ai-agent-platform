@@ -1,0 +1,23 @@
+# Template: install paths and account only after completing the M12 runbook.
+[Unit]
+Description=Enterprise AI M12 local teaching API
+After=network.target
+
+[Service]
+Type=simple
+User=enterprise-ai
+Group=enterprise-ai
+WorkingDirectory=/opt/enterprise-ai/current
+EnvironmentFile=/etc/enterprise-ai/m12.env
+ExecStart=/opt/enterprise-ai/current/.venv/bin/python -m uvicorn enterprise_ai.service_api:app_from_env --factory --host 127.0.0.1 --port 8012 --workers 1 --no-access-log --log-config /opt/enterprise-ai/current/configs/service/m12-logging.json
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/enterprise-ai
+
+[Install]
+WantedBy=multi-user.target

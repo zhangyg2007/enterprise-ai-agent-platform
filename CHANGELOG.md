@@ -2,6 +2,13 @@
 
 版本号表示课程交付批次；Python 包版本单独记录在 pyproject.toml。
 
+## 未发布 - 2026-10-28 M12/M13本地候选
+
+- M12：FastAPI受控HTTP、服务器凭证身份绑定、fixture/PG后端、严格请求与8KiB上限、进程内限流、脱敏关联日志、探针与经理指标；沿用M11审批/权限/幂等。
+- 三库操作锁内备份、格式/身份/摘要校验、新目录恢复；真实Uvicorn重启回放测试；失败验收脚本在首次请求前保留thread_id便于恢复。
+- 第12课、PostgreSQL/备份/升级回滚手册、回环systemd模板；第13课及七份FDE模板含需求、契约、14模块验收、四组评估、成本、演示与交接。
+- 当前候选未推送/合并；真实GPU、PG、Ubuntu/systemd、SSO/TLS与生产SLA未验收。验证证据见docs/validation/2026-10-28-m12-m13.md，Filelist同步更新。
+
 ## 未发布 - M11 T1/T2开发基础
 
 - 2026-10-24 T3候选：独立PostgreSQL账本、session_user映射/RLS/ACL、真实PostgresSaver3.2.0、只读M02冻结快照、私密service凭证生成及第11课/服务器验收脚本。真实PG与Ubuntu验收待执行；不把离线连接替身当数据库通过。

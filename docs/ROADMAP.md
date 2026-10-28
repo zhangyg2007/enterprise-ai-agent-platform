@@ -1,6 +1,6 @@
 # 课程路线与模块交付计划
 
-创建日期：2026-10-15；更新日期：2026-10-24。状态：main提供第0–10课及M01–M10代码，PR #4–#8已合并，课程批次0.1.7.0。M11草稿PR #9新增第11课与T3独立PostgreSQL适配/检查点/只读快照，本地验证与真实服务器验收分开，后者待执行；M12–M13仍为计划。
+创建日期：2026-10-15；更新日期：2026-10-28。状态：main提供第0–10课，课程批次0.1.7.0；M11在草稿PR #9。本地候选codex/m12-m13-delivery已补第12课/API/运维与第13课/FDE七模板，全套第0–13课可在候选目录阅读。本轮GitHub同步暂缓；真实GPU、PG与Ubuntu仍待验收。详见[续作验证记录](validation/2026-10-28-m12-m13.md)。
 
 ## 1. 学习目标和主线选择
 
@@ -99,3 +99,5 @@ M09本地新增完整head索引包、权限/日期检索、关键词/向量/RRF�
 M10提供真实StateGraph的单次规划/只读工具/条件边/重试/节点updates，见[第10课](tutorials/10-langgraph-basics.md)和[验收表](runbooks/m10-agent-handoff.md)。模型只能提议严格参数，确定性工具读取DB或M09证据；本章不包含业务写入、checkpoint持久化或生产认证。
 
 M11开发候选见[第11课](tutorials/11-enterprise-workflows.md)、[PostgreSQL实操验收](runbooks/m11-postgres-handoff.md)与[本地证据](validation/2026-10-24-m11-t3.md)。M02只读快照与派生账本分离，持久图不替代业务幂等；PG迁移/RLS/检查点实际运行须在服务器逐项验收。
+
+M12提供[API教程](tutorials/12-api-operations.md)及[运维交接](runbooks/m12-service-handoff.md)：服务端身份、受控三业务HTTP、单进程限流、脱敏日志、就绪、SQLite三库备份恢复与独立PG接入路径。M13提供[综合交付教程](tutorials/13-fde-delivery.md)和[验收矩阵](fde/03-acceptance-matrix.md)等七份模板。四组端到端模型评估目前为统一采集/人工评审协议，未提供自动化联合执行器，也无实测分数；生产SSO/TLS/高可用与真实ERP回写未交付。先按已写教材逐章验收，不把待执行项改成通过。
