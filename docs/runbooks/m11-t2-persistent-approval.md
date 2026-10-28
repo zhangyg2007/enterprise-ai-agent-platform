@@ -163,7 +163,15 @@ business.sqlite、control.sqlite、checkpoints.sqlite除类型外还绑定同一
 
 ## 8. 验收与练习
 
-保存代码commit、Python路径/版本、pip check/freeze、命令退出码和脱敏JSON。先完成第3–6节，再执行全量`python -m unittest discover -s tests -v`，与[本地验证边界](../validation/2026-10-23-m11-t2.md)区分。
+保存代码commit、Python路径/版本、pip check/freeze、命令退出码和脱敏JSON。先完成第3–6节，再在M11独立环境按下列命令检查T1/T2；本章环境未安装M12的FastAPI，不能在这里直接运行后续章节加入后的全仓测试。
+
+```bash
+python -m unittest discover -s tests -p 'test_workflow_store.py' -v
+python -m unittest discover -s tests -p 'test_workflow_graph.py' -v
+python -m unittest discover -s tests -p 'test_workflow_cli.py' -v
+```
+
+以上不替代T3真实PostgreSQL验收或全仓回归。当前候选全仓回归需另建独立Python 3.12环境，安装`requirements/m12-service.txt`、`requirements/m08-documents.txt`和本项目；不要覆盖M10环境。与[本地验证边界](../validation/2026-10-23-m11-t2.md)区分。
 
 1. 用两个线程各申请10天，解释为什么第二笔需要新草案而不是无限retry。
 2. 保持相同幂等键但修改days，观察拒绝；不要用新键掩盖重复请求。

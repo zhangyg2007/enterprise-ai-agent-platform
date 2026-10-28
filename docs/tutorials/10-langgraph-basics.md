@@ -149,15 +149,14 @@ python -m enterprise_ai.agent_cli --live --stream --model "$OLLAMA_MODEL" \
 
 ## 6. 验证、恢复与练习
 
-完整回归还需M08格式测试依赖。安装、模型、DB的实际结果填写[实操手册](../runbooks/m10-agent-handoff.md)，本地证据见[验证记录](../validation/2026-10-22-m10.md)。
+在本课独立环境中只运行M10的定向测试。后续M11和M12分别依赖不同的LangGraph/checkpoint与FastAPI组合，不能把全仓回归直接放在本课环境；也不要为了全仓测试把M11依赖叠装到M10环境。安装、模型、DB的实际结果填写[实操手册](../runbooks/m10-agent-handoff.md)，本地证据见[验证记录](../validation/2026-10-22-m10.md)。
 
 ```bash
-python -m pip install -r requirements/m08-documents.txt
 python -m pip check
-python -m unittest discover -s tests -v > reports/local/m10-full-tests.txt 2>&1
+python -m unittest discover -s tests -p 'test_agent*.py' -v > reports/local/m10-agent-tests.txt 2>&1
 ```
 
-检查退出码与完整日志，不能只看到文件就声称通过。缺langgraph时测试会明确失败，不用自写状态机替代框架。发生错误时对照：
+检查退出码与完整日志，不能只看到文件就声称通过。这组测试不替代全仓或服务器验收。如需运行**当前候选全仓测试**，新建独立Python 3.12环境，安装`requirements/m12-service.txt`、`requirements/m08-documents.txt`和本项目，再运行`python -m unittest discover -s tests -v`；该环境使用M11/M12的LangGraph版本，不代替本课固定M10版本的定向验证。缺langgraph时测试会明确失败，不用自写状态机替代框架。发生错误时对照：
 
 | 现象 | 恢复 |
 | --- | --- |

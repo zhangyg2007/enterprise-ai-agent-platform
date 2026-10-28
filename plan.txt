@@ -1,10 +1,11 @@
 # 教程总计划与当前状态
 
 更新：2026-10-28。范围基线：M00–M13，共14个模块。第0–13课教材在本地候选目录齐备；本文件记录实现、发布与实操证据的差异，不代表Ubuntu服务器已验收。
+2026-10-29审核：原始M10–M13目标尚未全部实现，尤其缺少三案例模型/RAG/审批闭环、四组端到端对照采集、高层/异步示例及审计追踪。已证实的章节环境测试命令问题已修正文档；详细范围、证据和验收条件见docs/validation/2026-10-29-m10-m13-audit.md。按用户“没有问题再同步”的条件，缺口关闭前不推送。
 详细课程表：docs/ROADMAP.md。
 原始架构目标：docs/superpowers/specs/2026-10-15-enterprise-ai-platform-design.md。
 当前学习分支：main（第0–10课，0.1.7.0）；路径均相对于本仓库根目录。
-本地续作分支：codex/m12-m13-delivery（含M11–M13），本批尚未推送。GitHub权限与同步留待后续，未修改Project看板。最新证据：docs/validation/2026-10-28-m12-m13.md。
+本地续作分支：codex/m12-m13-delivery（含M11–M13），本批尚未推送。GitHub Project看板未修改。原目标完整性判断见docs/validation/2026-10-29-m10-m13-audit.md；docs/validation/2026-10-28-m12-m13.md是上一批开发与本地测试证据。
 用户环境只在本地项目记忆中保存，不随公开仓库同步；服务器起步见docs/runbooks/server-start.md。
 
 ## 一、与原计划一致的模块主线
