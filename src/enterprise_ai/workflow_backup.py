@@ -21,14 +21,21 @@ def _hash(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 
-def _verify_database(path, expected_id, lab_id):
+def _verify_database(path, expected_id, lab_id, lab_format=1):
     with closing(sqlite3.connect(path.as_uri() + '?mode=ro', uri=True)) as db:
         if db.execute('PRAGMA integrity_check').fetchall() != [('ok',)]:
             raise ValueError('database integrity failure')
         if db.execute('PRAGMA application_id').fetchone()[0] != expected_id:
             raise ValueError('wrong database format')
-        if db.execute('SELECT lab_id,format_version FROM m11_lab_metadata WHERE slot=1').fetchall() != [(lab_id, 1)]:
+        if db.execute('SELECT lab_id,format_version FROM m11_lab_metadata WHERE slot=1').fetchall() != [(lab_id, lab_format)]:
             raise ValueError('mixed lab identity')
+        if lab_format == 2 and expected_id == APP_IDS[1]:
+            try:
+                if db.execute('SELECT version FROM policy_guard_metadata WHERE slot=1').fetchall() != [(1,)]:
+                    raise ValueError('invalid guarded lab metadata')
+                db.execute('SELECT tenant,thread_id,idempotency_key,binding FROM policy_guard_bindings LIMIT 0')
+            except sqlite3.DatabaseError as exc:
+                raise ValueError('missing guarded lab metadata') from exc
 
 
 def backup_lab(source, target):
@@ -45,9 +52,11 @@ def backup_lab(source, target):
             with closing(sqlite3.connect((lab.path/name).as_uri()+'?mode=ro', uri=True)) as src:
                 with closing(sqlite3.connect(destination)) as dst:
                     src.backup(dst)
-            _verify_database(destination, app_id, lab.lab_id)
+            _verify_database(destination, app_id, lab.lab_id, lab.format_version)
         manifest = {'format': 1, 'kind': 'm11-sqlite-backup', 'lab_id': lab.lab_id,
                     'files': {name: _hash(target/name) for name in FILES}}
+        if lab.format_version == 2:
+            manifest['lab_format'] = 2
         # Manifest is the completion marker, written only after all three snapshots pass.
         with (target / 'manifest.json').open('x', encoding='utf-8') as stream:
             json.dump(manifest, stream, indent=2)
@@ -63,17 +72,20 @@ def restore_lab(source, target):
     if manifest_path.stat().st_size > 4096:
         raise ValueError('manifest too large')
     manifest = strict_json_loads(manifest_path.read_text(encoding='utf-8'))
-    if (not isinstance(manifest, dict) or set(manifest) != {'format', 'kind', 'lab_id', 'files'}
+    base_fields = {'format', 'kind', 'lab_id', 'files'}
+    if (not isinstance(manifest, dict) or set(manifest) not in (base_fields, base_fields | {'lab_format'})
             or type(manifest['format']) is not int or manifest['format'] != 1
             or manifest['kind'] != 'm11-sqlite-backup'
             or not isinstance(manifest['lab_id'], str) or not re.fullmatch('[a-f0-9]{32}', manifest['lab_id'])
-            or not isinstance(manifest['files'], dict) or set(manifest['files']) != set(FILES)):
+            or not isinstance(manifest['files'], dict) or set(manifest['files']) != set(FILES)
+            or ('lab_format' in manifest and (type(manifest['lab_format']) is not int or manifest['lab_format'] != 2))):
         raise ValueError('unsupported backup manifest')
+    lab_format = manifest.get('lab_format', 1)
     for name, app_id in zip(FILES, APP_IDS):
         path = _no_links(source/name)
         if _hash(path) != manifest['files'][name]:
             raise ValueError('backup checksum mismatch')
-        _verify_database(path, app_id, manifest['lab_id'])
+        _verify_database(path, app_id, manifest['lab_id'], lab_format)
     target.mkdir(mode=0o700)
     for name in FILES:
         with (target/name).open('xb') as dst, (source/name).open('rb') as src:

@@ -17,6 +17,9 @@ from .workflow_store import FixtureStore, _arguments, _identifier, _json, create
 
 CONTROL_ID = 0x4D313143
 CHECKPOINT_ID = 0x4D313150
+# Process-internal entry-point marker for the local guarded teaching lab.
+# This is not a credential and does not defend against a local code/DB owner.
+_POLICY_GUARD = object()
 
 
 class WorkflowBusy(RuntimeError):
@@ -60,7 +63,7 @@ class WorkflowLab:
             if not target.is_file():
                 raise FileNotFoundError(target)
         self.store = FixtureStore(self.path / 'business.sqlite')
-        lab_ids = []
+        lab_ids, versions = [], []
         for db_path, expected in ((self.path / 'business.sqlite', 0x4D3131),
                                   (self.control, CONTROL_ID), (self.checkpoint, CHECKPOINT_ID)):
             with closing(_connect(db_path)) as db:
@@ -70,12 +73,22 @@ class WorkflowLab:
                     metadata = db.execute('SELECT lab_id,format_version FROM m11_lab_metadata WHERE slot=1').fetchall()
                 except sqlite3.DatabaseError as exc:
                     raise ValueError('missing lab identity; do not mix or patch database files') from exc
-                if len(metadata) != 1 or metadata[0][1] != 1 or not isinstance(metadata[0][0], str):
+                if len(metadata) != 1 or metadata[0][1] not in (1, 2) or not isinstance(metadata[0][0], str):
                     raise ValueError('unsupported lab identity/format')
                 lab_ids.append(metadata[0][0])
-        if len(set(lab_ids)) != 1:
+                versions.append(metadata[0][1])
+        if len(set(lab_ids)) != 1 or len(set(versions)) != 1:
             raise ValueError('database files belong to different labs')
         self.lab_id = lab_ids[0]
+        self.format_version = versions[0]
+        if self.format_version == 2:
+            with closing(_connect(self.control)) as db:
+                try:
+                    if db.execute('SELECT version FROM policy_guard_metadata WHERE slot=1').fetchall() != [(1,)]:
+                        raise ValueError('invalid guarded lab metadata')
+                    db.execute('SELECT tenant,thread_id,binding FROM policy_guard_bindings LIMIT 0')
+                except sqlite3.DatabaseError as exc:
+                    raise ValueError('guarded lab metadata is unavailable') from exc
 
     @contextmanager
     def _locked(self):
@@ -173,7 +186,9 @@ class WorkflowLab:
                 'plan': request['plan'], 'receipt': snapshot.values.get('receipt'),
                 'graph_failed': any(task.error is not None for task in snapshot.tasks)}
 
-    def start(self, actor, thread_id, idempotency_key, case, args):
+    def start(self, actor, thread_id, idempotency_key, case, args, *, _policy_guard=None):
+        if getattr(self, 'format_version', 1) == 2 and _policy_guard is not _POLICY_GUARD:
+            raise PermissionError('guarded lab requires policy-aware entry point')
         _identifier(thread_id)
         _identifier(idempotency_key)
         args = _arguments(case, args)
@@ -211,7 +226,9 @@ class WorkflowLab:
             with self._graph(actor, row) as graph:
                 return self._summary(actor, row, graph)
 
-    def decide(self, actor, thread_id, approved, *, fail_after_effect=False):
+    def decide(self, actor, thread_id, approved, *, fail_after_effect=False, _policy_guard=None):
+        if getattr(self, 'format_version', 1) == 2 and _policy_guard is not _POLICY_GUARD:
+            raise PermissionError('guarded lab requires policy-aware entry point')
         if type(approved) is not bool:
             raise ValueError('approval must be boolean')
         with self._locked():
@@ -232,7 +249,9 @@ class WorkflowLab:
                 graph.invoke(Command(resume=approved), config, durability='sync')
                 return self._summary(actor, row, graph)
 
-    def retry(self, actor, thread_id):
+    def retry(self, actor, thread_id, *, _policy_guard=None):
+        if getattr(self, 'format_version', 1) == 2 and _policy_guard is not _POLICY_GUARD:
+            raise PermissionError('guarded lab requires policy-aware entry point')
         with self._locked():
             row = self._authorize(actor, thread_id, manager=True)
             with self._graph(actor, row) as graph:

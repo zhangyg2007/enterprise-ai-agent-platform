@@ -1,5 +1,6 @@
 """M12 authenticated HTTP boundary; single worker, local teaching deployment."""
 from collections import deque
+from datetime import datetime, timezone
 import hashlib
 import hmac
 import json
@@ -37,7 +38,7 @@ class DecisionRequest(BaseModel):
 
 
 class HttpBoundary:
-    """Bound streamed input before JSON parsing; never log user-controlled fields."""
+    """Bound streamed input; log a validated, tenant-bound thread digest only."""
     def __init__(self, app, counters, counter_lock):
         self.app, self.counters, self.lock = app, counters, counter_lock
 
@@ -83,12 +84,18 @@ class HttpBoundary:
                 raise
             await JSONResponse({'error': 'service_unavailable_inspect_before_retry'}, status_code=503)(scope, receive, traced_send)
         finally:
-            with self.lock:
-                self.counters['requests'] += 1
-                self.counters['server_errors'] += int(status >= 500)
-                self.counters['denied'] += int(status in (401, 403, 429))
+            state = scope.get('state', {})
+            actor = state.get('audit_actor')
+            if actor:
+                with self.lock:
+                    counts = self.counters.setdefault(actor['tenant_id'],
+                        {'requests': 0, 'server_errors': 0, 'denied': 0})
+                    counts['requests'] += 1
+                    counts['server_errors'] += int(status >= 500)
+                    counts['denied'] += int(status in (401, 403, 429))
             LOG.info(json.dumps({'request_id': request_id, 'status': status,
-                                'actor': scope.get('state', {}).get('audit_actor'),
+                                'timestamp': datetime.now(timezone.utc).isoformat(),
+                                'actor': actor, 'thread_digest': state.get('audit_thread_digest'),
                                 'operation': getattr(scope.get('route'), 'name', 'unmatched'),
                                 'duration_ms': round((time.monotonic() - started)*1000, 2)}))
 
@@ -98,7 +105,7 @@ def create_app(config, *, requests_per_minute=60):
     if type(requests_per_minute) is not int or not 1 <= requests_per_minute <= 10000:
         raise ValueError('invalid request limit')
     app = FastAPI(title='M12 workflow teaching API', docs_url=None, redoc_url=None, openapi_url=None)
-    counters = {'requests': 0, 'server_errors': 0, 'denied': 0}
+    counters = {}
     counter_lock, rate_lock = threading.Lock(), threading.Lock()
     buckets = {p['token_sha256']: deque() for p in config['principals']}
     app.add_middleware(HttpBoundary, counters=counters, counter_lock=counter_lock)
@@ -171,24 +178,35 @@ def create_app(config, *, requests_per_minute=60):
         if context[1].role != 'manager':
             raise HTTPException(403, 'not_permitted')
         with counter_lock:
-            return {**counters, 'scope': 'process_only', 'business_audit': 'M11 ledger'}
+            tenant_counts = counters.get(context[1].tenant_id,
+                                         {'requests': 0, 'server_errors': 0, 'denied': 0})
+            return {**tenant_counts, 'scope': 'tenant_process_only', 'business_audit': 'M11 ledger'}
+
+    def bind_thread(request, actor, thread_id):
+        # Both tenant and thread are server-validated; no raw thread or body in logs.
+        value = f'{actor.tenant_id}:{thread_id}'.encode('utf-8')
+        request.state.audit_thread_digest = hashlib.sha256(value).hexdigest()
 
     @app.post('/v1/threads')
-    def start(body: StartRequest, context=Depends(session)):
+    def start(body: StartRequest, request: Request, context=Depends(session)):
         lab, actor = context
+        bind_thread(request, actor, body.thread_id)
         return perform(lambda: lab.start(actor, body.thread_id, body.idempotency_key, body.case,
                                          _arguments(body.case, body.arguments)))
 
     @app.get('/v1/threads/{thread_id}')
-    def inspect(thread_id: Identifier, context=Depends(session)):
+    def inspect(thread_id: Identifier, request: Request, context=Depends(session)):
+        bind_thread(request, context[1], thread_id)
         return perform(lambda: context[0].inspect(context[1], thread_id))
 
     @app.post('/v1/threads/{thread_id}/decision')
-    def decide(thread_id: Identifier, body: DecisionRequest, context=Depends(session)):
+    def decide(thread_id: Identifier, body: DecisionRequest, request: Request, context=Depends(session)):
+        bind_thread(request, context[1], thread_id)
         return perform(lambda: context[0].decide(context[1], thread_id, body.approved))
 
     @app.post('/v1/threads/{thread_id}/retry')
-    def retry(thread_id: Identifier, context=Depends(session)):
+    def retry(thread_id: Identifier, request: Request, context=Depends(session)):
+        bind_thread(request, context[1], thread_id)
         return perform(lambda: context[0].retry(context[1], thread_id))
 
     return app

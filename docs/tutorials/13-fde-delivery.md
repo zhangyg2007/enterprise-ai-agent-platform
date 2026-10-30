@@ -62,7 +62,25 @@
 
 按模板04冻结案例、标准答案、工具结果、语料权限及生成参数。A为基础模型，B为基础模型+RAG，C为同底座+adapter，D为同底座+adapter+RAG。先在validation选方案，冻结后才评估保留测试集。每题四组都保留输出和错误，不能删掉超时题。
 
-已有M07评估器验证四字段分类和基础/adapter对照，M09验证检索与摘录；它们不能直接相加成四组端到端成绩。本课提供手工评审与证据归档协议，尚无统一四组执行命令。可按既有工具分别采集结果并由两位评审按同一标准评阅；需要自动化联合评估时，作为后续明确实现项登记。未运行的格子填“待执行”，不填0。
+已有M07评估器验证四字段分类和基础/adapter对照，M09验证检索与摘录；它们不能直接相加成四组端到端成绩。本课现提供统一采集器：先使用M09按固定租户、角色和日期冻结检索引用与业务快照，再依次用相同底座的base/adapter生成四组结果。采集器只收集输出及错误，不自动判定回答正确或引用适用；按模板由两位评审复核。冻结的业务事实由操作者提供，程序不会自行证明其来自真实数据库；第11课另有合成三案例串联，正式业务Agent仍待完成。未运行的质量格子填“待执行”，不填0。
+
+先在M10应用环境做**合成管线**实验。以下命令在Ubuntu仓库根目录，输出必须是新路径：
+
+```bash
+python -m enterprise_ai.agent_cli --fixture --request '报价审批制度' --output reports/local/m13-input-01
+python -m enterprise_ai.four_arm_freeze --seed data/samples/m13-four-arm-seed.json \
+  --index reports/local/m13-input-01/index.json --state reports/local/m13-input-01/documents.sqlite \
+  --fixture-encoder --output reports/local/m13-snapshot-01.json
+python -m enterprise_ai.four_arm_eval --fixture --snapshot reports/local/m13-snapshot-01.json \
+  --output reports/local/m13-comparison-01
+python -m unittest tests.test_four_arm_eval tests.test_four_arm_snapshot -v
+```
+
+预期冻结三道题并保存M09租户、版本、角色/日期与来源摘要；四组各3条，总共12条，`kind=synthetic-fixture`。本示例沿用原M08权限，休假制度默认仅hr可见，因此employee题应保留空引用、RAG组记录`evidence_status=insufficient`，不能把员工提升为hr来获得证据；第11课的另一份合成实验显式调整了该示例制度的ACL，两者是不同实验数据。查看`records.json`与`report.json`，模拟模型只输出固定文本；完成仅表示采集流程执行，不代表模型质量。旧索引或错误embedding身份会拒绝冻结，角色无可见证据则保留空引用。事实快照是教学示例，不代表M02实时查询。
+
+采集过程逐条写入`records.jsonl`并刷新；异常中断后可保留已完成行，没有`report.json`表示该轮不完整，不能按完整四组评分。当前不自动续跑：保留原目录，用新目录重新执行完整轮次。
+
+真实实验分两环境：先在M09应用环境用已验收的真实索引/文档状态，执行相同`four_arm_freeze`命令，将`--fixture-encoder`换成`--embedding <已验证BGE本地路径>`，并使用经过授权审核的独立seed和输出路径；`--device cpu`或`--device cuda`必须与M09索引中的设备身份一致。再进入M07的Python 3.11/LLaMA-Factory训练环境，用同一冻结文件执行 `python -m enterprise_ai.four_arm_eval --snapshot <冻结文件> --release <M07已验收release目录> --output <不存在的报告目录>`。在受控私有目录操作，Linux先设置`umask 077`、Windows限制当前用户ACL；快照和原始回答可能包含敏感内容，Git忽略不等于访问控制。不导入未授权文本或真实私密数据到Git。程序顺序加载base及adapter，核对M07 release及资产，保留每题原始输出、摘要、错误和计时；失败计入分母，模型资产发生变化则整轮无效。事实是操作员自报的冻结值，正式评估需另留M02导出版本和身份核验。上述真实路径、GPU及质量评分尚未实测。
 
 产出：四组输入清单、逐题记录表、指标定义、适用范围和限制；真实分数只在证据齐全后填写。
 

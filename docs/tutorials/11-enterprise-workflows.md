@@ -4,6 +4,8 @@
 
 执行位置：Ubuntu仓库根目录，开发分支`codex/m11-enterprise-workflows`，见[取得分支及独立环境](../runbooks/m11-t2-persistent-approval.md)。本章在[草稿PR #9](https://github.com/zhangyg2007/enterprise-ai-agent-platform/pull/9)，尚未进入main。main学习入口仍是第0–10课。应用使用独立Python3.12环境；不改系统Python或训练环境。
 
+第8节是后续`codex/m12-m13-delivery`候选中的补充，不包含在上面的M11草稿分支。学习第8节时先核实当前版本含`src/enterprise_ai/business_agent_demo.py`，不要切回不包含该文件的旧M11分支；候选尚未同步远端时只能使用已有本地工作目录。
+
 ## 1. 从只读工具到有后果的动作
 
 M10的模型提议只读工具，失败通常可以重查。M11扣假或创建采购回执后，即使调用方超时，数据库也可能已经提交。再次“重试请求”可能生成第二笔业务动作，因此必须把请求身份、审批、资源版本和业务回执纳入协议。
@@ -97,3 +99,29 @@ T1业务方法通过静态SQL适配层复用，PostgreSQL事务的tenant锁替�
 解释：版本保护的是实际共享资源；模型或文档无权改变图外审批契约；新键表示另一份业务请求，无法自动判断用户是否重复；收货需要独立业务事件；身份函数使用session_user管理员映射，不读取自报变量。
 
 官方资料：[LangGraph持久化](https://docs.langchain.com/oss/python/langgraph/persistence)、[固定PostgresSaver版本与setup要求](https://pypi.org/project/langgraph-checkpoint-postgres/3.2.0/)、[PostgreSQL行安全](https://www.postgresql.org/docs/16/ddl-rowsecurity.html)、[session_user语义](https://www.postgresql.org/docs/16/functions-info.html)、[Psycopg事务](https://www.psycopg.org/psycopg3/docs/basic/transactions.html)。
+
+## 8. 三业务模型计划、检索与审批的合成串联
+
+本节新增可执行学习实验：先由规划器提出严格的业务参数，再按可信角色与租户用M09查询制度出处，创建M11草案，最后由独立经理角色审批。每份草案和引用单独保存在实验目录；重复批准读取原回执。混合格式测试需要M08文档依赖，旧HTTP入口测试需要M12服务依赖。使用新的Python 3.12独立环境和新输出目录，不覆盖M10或训练环境：
+
+```bash
+python3.12 -m venv .venv-m11-integrated
+source .venv-m11-integrated/bin/activate
+python -m pip install -r requirements/m12-service.txt -r requirements/m08-documents.txt
+python -m pip install --no-deps -e .
+python -m pip check
+python -m enterprise_ai.business_agent_demo --output reports/local/m11-integrated-01
+python -m unittest tests.test_business_agent tests.test_business_agent_demo tests.test_guarded_workflow -v
+```
+
+预期三案例均`executed`、`effect_count=3`。先检查`demo-quote.json`、`demo-leave.json`、`demo-replenish.json`内的`workflow.waiting_for_approval`为true，再核对每条引用的document_id/version/section。示例数据、账号、审批人以及默认规划器均为合成替身；程序模拟经理动作，不能把结果当成真实人员审批或真实模型能力。它为合成休假制度显式授权employee角色，而不是把员工提升为HR。若索引不包含授权的当前制度，程序拒绝创建草案；不要通过增加角色绕过。
+
+在已按M04核实Ollama确切模型标签和本机服务能力后，可把`--model <模型标签>`加到上面的命令并换新输出目录；此时只有规划器调用真实模型，数据、哈希embedding、角色和经理动作仍是合成的。模型若缺字段、选错案例或输出越权身份字段，程序应失败而非自行放宽约束。当前真实模型路径未在Ubuntu验收。
+
+测试覆盖三个案例的恶意制度文字、跨租户和自批拒绝、缺字段、证据删除、批准后未执行时的旧制度拒绝、正常拒绝和重复审批。制度文本只作不可信检索数据；不能从中自动执行审批命令。引用按当前合成文档的章节主题筛选，相关性和制度适用性仍需业务人员核对。
+
+**边界：**演示新建格式2的受保护SQLite账本，持久绑定草案、身份及制度引用摘要；旧M11 CLI和M12 HTTP写入口对该账本的创建、批准与重试会拒绝。格式1旧实验和PostgreSQL账本没有这一保护，M12也尚无制度感知的业务入口。格式2仍信任本地Python进程和文件所有者，进程内标记不是凭证，不能防止有本地代码或数据库写权限的人绕过。
+
+批准及恢复执行前，封装持有M08 SQLite协作写锁直到M11事务返回；非协作式篡改不受保护，文档状态与业务账本也不是跨库原子事务。M12三库备份支持格式2及其绑定；M09索引与M08文档状态必须另行一致备份，恢复后核对摘要。恢复副本与原账本具有相同身份，不要同时用两份进行真实写入。此例不能宣称完成生产身份认证、真正独立的人审、实时ERP回写或生产审计；正式PG门禁与跨系统一致性仍需实现和实测。
+
+待执行批准同时检查冻结日期和本机当前日期的授权引用一致；制度到期或当前可见引用改变时应拒绝并重新提案。这里信任本机日期和时区，生产系统须指定可信时间来源与业务时区，不能让客户端回传时间作为授权依据。已提交结果的幂等恢复不重新产生业务效果。

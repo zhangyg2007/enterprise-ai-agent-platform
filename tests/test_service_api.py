@@ -18,9 +18,10 @@ class ServiceTests(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         self.lab = create_lab(self.root / 'lab')
-        self.tokens = {name: (name + '-').ljust(48, 'x') for name in ('employee', 'manager', 'other', 'colleague')}
+        self.tokens = {name: (name + '-').ljust(48, 'x') for name in ('employee', 'manager', 'other', 'colleague', 'other_manager')}
         actors = {'employee': [1, 2, 1, 'employee'], 'manager': [1, 4, 4, 'manager'],
-                  'other': [2, 2, 1, 'employee'], 'colleague': [1, 8, 8, 'employee']}
+                  'other': [2, 2, 1, 'employee'], 'colleague': [1, 8, 8, 'employee'],
+                  'other_manager': [2, 4, 4, 'manager']}
         self.config = {'mode': 'fixture', 'lab': str(self.root / 'lab'), 'principals': [
             {'token_sha256': hashlib.sha256(self.tokens[name].encode()).hexdigest(),
              'actor': dict(zip(('tenant_id', 'user_id', 'employee_id', 'role'), actor))}
@@ -82,6 +83,34 @@ class ServiceTests(unittest.TestCase):
         self.assertRegex(result.headers['x-request-id'], '^[a-f0-9]{32}$')
         for secret in ('PRIVATE', 'SECRET', self.tokens['employee']):
             self.assertNotIn(secret, '\n'.join(logs.output))
+
+    def test_business_audit_links_to_http_for_start_deny_approve_and_retry(self):
+        # Ledger request_id equals the thread ID; hash joins without logging raw input.
+        expected = hashlib.sha256(b'1:leave-1').hexdigest()
+        with self.assertLogs('enterprise_ai.http', level='INFO') as logs:
+            responses = [self.start(),
+                self.client.post('/v1/threads/leave-1/decision', json={'approved': True}, headers=self.headers()),
+                self.client.post('/v1/threads/leave-1/decision', json={'approved': True}, headers=self.headers('manager')),
+                self.client.post('/v1/threads/leave-1/decision', json={'approved': True}, headers=self.headers('manager'))]
+        self.assertEqual([r.status_code for r in responses], [200, 403, 200, 200])
+        entries = [json.loads(item.split(':', 2)[2]) for item in logs.output]
+        for response, entry in zip(responses, entries):
+            self.assertEqual(entry['request_id'], response.headers['x-request-id'])
+            self.assertEqual(entry['thread_digest'], expected)
+            self.assertEqual(entry['actor']['tenant_id'], 1)
+            self.assertNotIn('leave-1', json.dumps(entry))
+        self.assertEqual(self.lab.store.effect_count(FixtureActor(1, 4, 4, 'manager')), 1)
+
+    def test_manager_metrics_exclude_other_tenant_and_unauthenticated_requests(self):
+        before = self.client.get('/v1/metrics', headers=self.headers('manager')).json()['requests']
+        for _ in range(3):
+            self.assertEqual(self.client.get('/health/ready', headers=self.headers('other')).status_code, 200)
+        self.client.get('/health/ready')
+        after = self.client.get('/v1/metrics', headers=self.headers('manager')).json()
+        other = self.client.get('/v1/metrics', headers=self.headers('other_manager')).json()
+        self.assertEqual(after['requests'], before + 1)  # previous metrics request only
+        self.assertGreaterEqual(other['requests'], 3)
+        self.assertEqual(after['scope'], 'tenant_process_only')
 
     def test_unavailable_and_busy_are_sanitized(self):
         from enterprise_ai.workflow_graph import WorkflowBusy

@@ -8,3 +8,5 @@ httpx2==2.16.0
 httpx==0.28.1
 pydantic==2.14.1
 anyio==4.15.1
+# Also runs the M10 advanced create_agent/ainvoke supplement in full regression.
+langchain==1.4.7
