@@ -1,0 +1,5 @@
+# Add only to the independent M11 application environment.
+-r m11-workflows.txt
+langgraph-checkpoint-postgres==3.2.0
+psycopg-pool==3.2.8
+orjson==3.11.5

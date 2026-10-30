@@ -1,0 +1,3 @@
+# Separate from M10's LangGraph 1.0.2 environment; local verification uses Python 3.12.
+-r m11-workflows.txt
+langchain==1.4.7

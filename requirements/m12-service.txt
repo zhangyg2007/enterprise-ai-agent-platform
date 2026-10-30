@@ -1,0 +1,12 @@
+# Independent application environment. Versions checked 2026-10-27.
+-r m11-postgres.txt
+fastapi==0.162.0
+uvicorn==0.54.0
+# Starlette's current TestClient imports httpx2; the tutorial client uses httpx.
+starlette==1.10.0
+httpx2==2.16.0
+httpx==0.28.1
+pydantic==2.14.1
+anyio==4.15.1
+# Also runs the M10 advanced create_agent/ainvoke supplement in full regression.
+langchain==1.4.7

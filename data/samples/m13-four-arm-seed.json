@@ -1,0 +1,7 @@
+{
+  "cases": [
+    {"id": "sales-01", "question": "销售报价审批依据是什么？", "policy_query": "报价审批", "role": "sales", "as_of": "2026-10-22", "tool_snapshot": {"amount": "190.00", "currency": "CNY"}},
+    {"id": "leave-01", "question": "员工休假如何申请？", "policy_query": "休假申请审批", "role": "employee", "as_of": "2026-10-22", "tool_snapshot": {"remaining_days": 15}},
+    {"id": "supply-01", "question": "采购补货遵循什么制度？", "policy_query": "采购补货审批", "role": "procurement", "as_of": "2026-10-22", "tool_snapshot": {"on_hand": 20, "reserved": 5, "on_order": 4, "reorder_point": 30}}
+  ]
+}

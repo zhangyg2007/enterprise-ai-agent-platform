@@ -1,6 +1,10 @@
 # 课程路线与模块交付计划
 
-创建日期：2026-10-15；更新日期：2026-10-22。状态：main提供第0–10课及M01–M10代码，PR #4–#8已合并，课程批次0.1.7.0。Ubuntu服务器验收待执行。M11的T1合成事务实验在草稿PR #9，持久图和正式PostgreSQL尚待实施；M12–M13仍为计划。
+创建日期：2026-10-15；更新日期：2026-10-28。状态：main提供第0–10课，课程批次0.1.7.0；M11在草稿PR #9。本地候选codex/m12-m13-delivery已补第12课/API/运维与第13课/FDE七模板，全套第0–13课可在候选目录阅读。本轮GitHub同步暂缓；真实GPU、PG与Ubuntu仍待验收。详见[续作验证记录](validation/2026-10-28-m12-m13.md)。
+
+2026-10-29完整性审核补充：章节文件齐全不代表原始目标完成。三个业务案例尚未连接模型、制度RAG/引用与审批；四组端到端对照缺少可复现采集流程；`create_agent`/异步示例、业务注入实操、统一审计追踪亦待补。明确验收条件见[审核记录](validation/2026-10-29-m10-m13-audit.md)，这些是实现/教程缺口，不仅是服务器未实测。
+
+同日续作：已新增三业务合成串联与注入测试、M09引用冻结及四组采集、高层/异步离线示例、线程摘要与租户内进程指标；格式2 SQLite实验拒绝旧写入口，旧格式与PG仍无此保护。跨库非原子、事实来源由操作者核验及真实服务器/模型待测等限制仍在。最新实现与验证见[续作记录](progress/2026-10-29-m10-m13-closure.md)与[课程总状态](progress/2026-10-29-course-status.md)。
 
 ## 1. 学习目标和主线选择
 
@@ -97,3 +101,7 @@ M06 提供固定版本 Qwen3-4B-Instruct-2507 的 QLoRA 候选配置、训练快
 M09本地新增完整head索引包、权限/日期检索、关键词/向量/RRF与可选重排、pgvector适配、24题公开开发集及六项增量实验。见[第9课](tutorials/09-enterprise-rag.md)、[数据卡](data-cards/m09-retrieval.md)、[服务器手册](runbooks/m09-rag-handoff.md)和[验证记录](validation/2026-10-22-m09.md)。fixture只验证流程；真实BGE、数据库迁移/RLS/HNSW与Ubuntu安装仍待执行。
 
 M10提供真实StateGraph的单次规划/只读工具/条件边/重试/节点updates，见[第10课](tutorials/10-langgraph-basics.md)和[验收表](runbooks/m10-agent-handoff.md)。模型只能提议严格参数，确定性工具读取DB或M09证据；本章不包含业务写入、checkpoint持久化或生产认证。
+
+M11开发候选见[第11课](tutorials/11-enterprise-workflows.md)、[PostgreSQL实操验收](runbooks/m11-postgres-handoff.md)与[本地证据](validation/2026-10-24-m11-t3.md)。M02只读快照与派生账本分离，持久图不替代业务幂等；PG迁移/RLS/检查点实际运行须在服务器逐项验收。
+
+M12提供[API教程](tutorials/12-api-operations.md)及[运维交接](runbooks/m12-service-handoff.md)：服务端身份、受控三业务HTTP、单进程限流、脱敏日志、就绪、SQLite三库备份恢复与独立PG接入路径。M13提供[综合交付教程](tutorials/13-fde-delivery.md)和[验收矩阵](fde/03-acceptance-matrix.md)等七份模板。四组端到端模型评估目前为统一采集/人工评审协议，未提供自动化联合执行器，也无实测分数；生产SSO/TLS/高可用与真实ERP回写未交付。先按已写教材逐章验收，不把待执行项改成通过。

@@ -149,15 +149,14 @@ python -m enterprise_ai.agent_cli --live --stream --model "$OLLAMA_MODEL" \
 
 ## 6. 验证、恢复与练习
 
-完整回归还需M08格式测试依赖。安装、模型、DB的实际结果填写[实操手册](../runbooks/m10-agent-handoff.md)，本地证据见[验证记录](../validation/2026-10-22-m10.md)。
+在本课独立环境中只运行M10的定向测试。后续M11和M12分别依赖不同的LangGraph/checkpoint与FastAPI组合，不能把全仓回归直接放在本课环境；也不要为了全仓测试把M11依赖叠装到M10环境。安装、模型、DB的实际结果填写[实操手册](../runbooks/m10-agent-handoff.md)，本地证据见[验证记录](../validation/2026-10-22-m10.md)。
 
 ```bash
-python -m pip install -r requirements/m08-documents.txt
 python -m pip check
-python -m unittest discover -s tests -v > reports/local/m10-full-tests.txt 2>&1
+python -m unittest discover -s tests -p 'test_agent*.py' -v > reports/local/m10-agent-tests.txt 2>&1
 ```
 
-检查退出码与完整日志，不能只看到文件就声称通过。缺langgraph时测试会明确失败，不用自写状态机替代框架。发生错误时对照：
+检查退出码与完整日志，不能只看到文件就声称通过。这组测试不替代全仓或服务器验收。如需运行**当前候选全仓测试**，新建独立Python 3.12环境，安装`requirements/m12-service.txt`、`requirements/m08-documents.txt`和本项目，再运行`python -m unittest discover -s tests -v`；该环境使用M11/M12的LangGraph版本，不代替本课固定M10版本的定向验证。缺langgraph时测试会明确失败，不用自写状态机替代框架。发生错误时对照：
 
 | 现象 | 恢复 |
 | --- | --- |
@@ -171,6 +170,27 @@ python -m unittest discover -s tests -v > reports/local/m10-full-tests.txt 2>&1
 | insufficient | 当前工具无结果或无证据，补信息并核对范围 |
 
 练习：1）为什么employee_id不能作为模型参数？2）如果只读工具超时后自动重试，为什么M11写工具不能照搬？3）updates有三条是否代表生成了三个token？4）删掉来源后增大retry次数能修复旧索引吗？
+
+## 7. 高层 `create_agent` 与异步 `ainvoke` 补充实验
+
+M10主实验使用LangGraph 1.0.2；本节使用LangChain 1.4.7和LangGraph 1.2.16，**必须新建独立环境**，不能覆盖`.venv-agent`。`create_agent`构建的是模型—工具循环，`StateGraph`适合显式控制节点与路由；`ainvoke`是异步接口，并不会自动让同步数据库或模型调用变成非阻塞操作。
+
+```bash
+python3.12 -m venv .venv-agent-advanced
+source .venv-agent-advanced/bin/activate
+python -m pip install -r requirements/m10-advanced-agent.txt
+python -m pip install --no-deps -e .
+python -m pip check
+mkdir -p data/generated
+python -m enterprise_ai.advanced_agent --lab data/generated/m10-advanced-01.sqlite
+python -m unittest tests.test_advanced_agent -v
+```
+
+预期JSON中`kind=scripted-fixture-not-real-model`，同步和异步各出现一次`remaining_days=15`。该实验运行真实`create_agent`和工具节点，但模型响应是预先写好的脚本，不会理解问题、判断越权或验证生产模型质量。它仅有`my_leave_balance()`只读工具：tenant和employee由程序中的可信实验身份绑定，模型不能传入身份参数，也没有写入/批准工具。已存在的lab文件不会覆盖，重跑需换名称。实验查询是合成数据，不连接M02数据库或真实模型。
+
+实际生产仍须在工具层验证认证身份、权限、输入和超时；提示词、模型输出或用户文本不是安全边界。练习：把脚本化模型改为真实模型前，先在哪一层确认模型具备工具调用能力、身份不可由模型指定、写操作必须由独立审批？参考答案：模型能力核查在适配器，身份授权在服务端与工具，副作用在M11审批/事务边界；分别做正反例与真实服务器验收。
+
+参考官方资料：[LangChain Agents](https://docs.langchain.com/oss/python/langchain/agents)、[LangGraph 图 API](https://docs.langchain.com/oss/python/langgraph/use-graph-api)。
 
 参考：1）身份由可信上下文与数据库会话绑定。2）写操作有副作用，必须先定义幂等与事务。3）不是，三条是节点增量。4）不能，旧包是永久失效，需重建而非重试。
 
